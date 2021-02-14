@@ -1,0 +1,50 @@
+﻿@model RecipeForSuccess.ViewModels.LoginVM
+
+@{
+    Layout = "~/Views/Shared/_EmptyLayoutPage.cshtml";
+}
+
+
+<div class="background">
+    <div class="login-form">
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+
+
+            <h2 class="text-center">Log in</h2>
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.email, htmlAttributes: new { @class = "control-label col-md-4" })
+          
+                    @Html.EditorFor(model => model.email, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.email, "", new { @class = "text-danger" })
+          
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.password, htmlAttributes: new { @class = "control-label col-md-4" })
+         
+                    @Html.PasswordFor(model => model.password, new { @class = "form-control" } )
+                    @Html.ValidationMessageFor(model => model.password, "", new { @class = "text-danger" })
+           
+            </div>
+
+            <div class="form-group">
+
+                <input type="submit" value="Log in" class="btn btn-success btn-block" />
+
+            </div>
+
+            <div class="clearfix">
+                <label class="pull-left checkbox-inline"><input type="checkbox"> Remember me</label>
+                <a href="/Account/ForgotPassword" class="pull-right">Forgot Password?</a>
+            </div>
+
+            <div class="hint-text text-center"> <a href="/account/register">Create an Account</a></div>
+
+
+        }
+    </div>
+</div>
