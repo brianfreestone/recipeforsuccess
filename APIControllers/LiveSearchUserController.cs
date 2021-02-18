@@ -9,27 +9,21 @@ using RecipeForSuccess.ViewModels;
 
 namespace RecipeForSuccess_mvc.APIControllers
 {
-    public class EmailController : ApiController
+    public class LiveSearchUserController : ApiController
     {
-
         IUsersService usersService;
 
-        public EmailController(IUsersService usersService)
+        public LiveSearchUserController(IUsersService usersService)
         {
             this.usersService = usersService;
         }
 
-       
-        public string Get(string email)
+        
+        public IHttpActionResult Get(string searchVal)
         {
-            if (usersService.UserExistsByEmail(email) == false)
-            {
-                return "Not Found";
-            }
-            else
-            {
-                return "Found";
-            }
+            List<UserVM> usernames = usersService.LiveSearchUsers(searchVal);
+
+            return Json(usernames);
         }
     }
 }

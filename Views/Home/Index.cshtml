@@ -1,0 +1,67 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+<ul class="nav navbar-nav">
+    <li class="liveSearchLi">
+        <input id="searchText" class="searchText form-control" type="text" placeholder="Search Friends" />
+        <ul id="liveSearchUl"></ul>
+    </li>
+</ul>
+
+@section Scripts {
+
+    <script src="~/Scripts/jquery.signalR-2.2.2.min.js"></script>
+    <script src="/signalr/hubs"></script>
+    <script>
+
+        $(document).ready(function () {
+
+            /*
+             * Live Search Username
+             */
+
+            $('input#searchText').keyup(function () {
+
+                var searchVal = $('input#searchText').val();
+                $('ul#liveSearchUl').empty();
+
+                if (searchVal == "" || searchVal == " ") {
+                    return false
+                }
+
+                var url = '/api/livesearchuser';
+                $.get(url, { searchVal: searchVal }, function (data) {
+                    if (data.length > 0) {
+                        $('ul#liveSearchUl').append("<li class=close>x</li>");
+
+                        for (var i = 0; i < data.length; i++) {
+                            var obj = data[i];
+
+                            $('ul#liveSearchUl').append('<li class=liveSearchLi><a href="/' + obj.username + '">' + obj.first_name + ' ' + obj.last_name + '</a></li>');
+                        }
+                    }
+
+                });
+            });
+            /*
+             Hub
+             */
+
+            // Setup Hub Connection
+            var hub = $.connection.echo;
+
+            // connect to the hub
+            $.connection.hub
+                .start()
+                .done(function () {
+                    hub.server.hello("Signal works");
+                });
+
+        });
+
+
+    </script>
+} 

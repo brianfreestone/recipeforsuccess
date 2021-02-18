@@ -21,15 +21,17 @@ namespace RecipeForSuccess_mvc.APIControllers
 
         public string Get(string username)
         {
-            if (usersService.CheckUserExistsByUsername(username) != false)
-            {
-                return "Found";
-            }
-            else
+
+            if (usersService.UserExistsByUsername(username) == false)
             {
                 return "Not Found";
             }
-        }
+            else
+            {
+                return "Found";
+            }
 
+
+        }
     }
 }

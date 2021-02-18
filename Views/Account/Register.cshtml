@@ -14,7 +14,7 @@
 
             <h2 class="text-center">Sign Up</h2>
             <p class="lead text-center">Please fill in this form to create an account!</p>
-            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            @Html.ValidationSummary(true, "All fields must be filled out!" , new { @class = "text-danger" })
 
             <div class="form-group">
                 @Html.LabelFor(model => model.first_name, htmlAttributes: new { @class = "control-label col-md-4" })
@@ -33,27 +33,26 @@
             </div>
 
             <div class="form-group">
-                @Html.LabelFor(model => model.email, htmlAttributes: new { @class = "control-label col-md-6" })
-
+                @Html.LabelFor(model => model.email, htmlAttributes: new { @class = "control-label col-md-4" })
+                <small id="email-exists" class="text-danger col-md-3"></small>
                 @Html.EditorFor(model => model.email, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.email, "", new { id = "email-feedback", @class = "text-danger" })
                 <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
-                <small id="email-exists" class="text-danger"></small>
+
             </div>
 
             <div class="form-group">
-                @Html.LabelFor(model => model.username, htmlAttributes: new { @class = "control-label col-md-4" })
-
-                @Html.EditorFor(model => model.username, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.username, "", new { id = "username-feedback", @class = "text-danger" })
-
+                @Html.LabelFor(model => model.username, htmlAttributes: new { @class = "control-label col-md-3" })
+                <small id="username-exists" class="text-danger col-md-3"></small>
+                    @Html.EditorFor(model => model.username, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.username, "", new { id = "username-feedback", @class = "text-danger" })
             </div>
 
 
             <div class="form-group">
                 @Html.LabelFor(model => model.password, htmlAttributes: new { @class = "control-label col-md-4" })
 
-                @Html.EditorFor(model => model.password, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.PasswordFor(model => model.password, new { @class = "form-control" })
                 @Html.ValidationMessageFor(model => model.password, "", new { @class = "text-danger" })
 
             </div>
@@ -61,14 +60,14 @@
             <div class="form-group">
                 @Html.LabelFor(model => model.confirm_password, htmlAttributes: new { @class = "control-label col-md-8" })
 
-                @Html.EditorFor(model => model.confirm_password, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.PasswordFor(model => model.confirm_password, new { @class = "form-control" })
                 @Html.ValidationMessageFor(model => model.confirm_password, "", new { @class = "text-danger" })
 
             </div>
 
             <div class="form-group">
 
-                <input type="submit" value="Create" class="btn btn-success btn-block" />
+                <input type="submit" id="btnSubmit" value="Create" class="btn btn-success btn-block" />
 
             </div>
 
@@ -81,27 +80,82 @@
 @section scripts{
 
     <script>
-        $('#email').blur(function () {
+
+        // this function is an ajax call to the web api
+        //
+        $('#email').keyup(function () {
             let data = $('#email').val();
+            if (data.length > 2) {
 
-            $.ajax({
-                url: '/api/email?email=' + data,
-                type: 'GET',
-             
-                success: function (response) {
-                    if (response == "Not Found") {
-                        $('#email-exists').text('');
+                $.ajax({
+                    url: '/api/email?email=' + data,
+                    type: 'GET',
+
+                    success: function (response) {
+                        if (response == "Not Found") {
+                            $('#email-exists').text('');
+                            $('#btnSubmit').removeClass("disabled");
+                            $('#btnSubmit').prop("disabled", false);
+                        }
+                        else {
+                            $('#email-exists').text('Email already registered!');
+                            $('#btnSubmit').addClass("disabled");
+                            $('#btnSubmit').prop("disabled", true);
+                        }
+                    },
+                    fail: function (er) {
+
                     }
-                    else {
-                        $('#email-exists').text('Email already registered!');
-                    }
-                },
-                fail: function (er) {
-
-                }
-            })
-
+                })
+            }
         });
+
+        $('#username').keyup(function () {
+            let data = $('#username').val();
+            if (data.length > 2) {
+
+                $.ajax({
+                    url: '/api/username?username=' + data,
+                    type: 'GET',
+
+                    success: function (response) {
+                        if (response == "Not Found") {
+                            $('#username-exists').text('');
+                            $('#btnSubmit').removeClass("disabled");
+                            $('#btnSubmit').prop("disabled", false);
+                        }
+                        else {
+                            $('#btnSubmit').prop("disabled", true);
+                            $('#btnSubmit').addClass("disabled");
+                            $('#username-exists').text('Username already registered!');
+                        }
+                    },
+                    fail: function (er) {
+
+                    }
+                })
+
+            }
+        });
+
+            //$('#username').keyup(function () {
+            //    let data = $('#username').val();
+
+            //        $.ajax({
+            //            url: '/api/username?username=' = data,
+            //            type: 'GET',
+
+            //            success: function (response) {
+            //                if (response == "Not Found") {
+            //                    $('#username-exists').text('That Username already registered!');
+            //                    $('#btnSubmit').prop("disabled", true);
+            //                }
+            //            },
+            //            fail: function (er) {
+
+            //            }
+            //        })
+            //});
 
     </script>
 

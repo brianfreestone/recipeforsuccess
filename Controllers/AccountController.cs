@@ -11,9 +11,7 @@ namespace RecipeForSuccess_mvc.Controllers
     public class AccountController : Controller
     {
 
-
         IUsersService usersService;
-
 
         public AccountController(IUsersService usersService)
         {
@@ -34,15 +32,30 @@ namespace RecipeForSuccess_mvc.Controllers
         {
             if (ModelState.IsValid)
             {
-                int userID = usersService.InsertUser(registerVM);
-                Session["CurrentUserID"] = userID;
-                Session["CurrentUserName"] = registerVM.username;
-                Session["CurrentUserIsAdmin"] = false;
 
-                return RedirectToAction("Index", "Home");
+                if (usersService.UserExistsByEmail(registerVM.email))
+                {
+                    ModelState.AddModelError("key", "Email already used");
+                    return View();
+                }
+                else if (usersService.UserExistsByUsername(registerVM.username))
+                {
+                    ModelState.AddModelError("key", "Username already used");
+                    return View();
+                }
+                else
+                {
+                    int userID = usersService.InsertUser(registerVM);
+                    Session["CurrentUserID"] = userID;
+                    Session["CurrentUserName"] = registerVM.username;
+                    Session["CurrentUserIsAdmin"] = false;
+
+                    return RedirectToAction("Index", "Home");
+                }
             }
             else
             {
+                ViewBag.Error = "All Fields must be completed.";
                 ModelState.AddModelError("key", "Fields must be completed");
             }
 
@@ -65,7 +78,7 @@ namespace RecipeForSuccess_mvc.Controllers
             if (ModelState.IsValid)
             {
                 UserVM userVM = usersService.GetUserByEmailAndPassword(loginVM.email, loginVM.password);
-                if (userVM != null)
+                if (userVM.user_id != 0)
                 {
                     Session["CurrentUserID"] = userVM.user_id;
                     Session["CurrentUserName"] = userVM.username;
@@ -77,8 +90,14 @@ namespace RecipeForSuccess_mvc.Controllers
                     }
                     else
                     {
+                        ViewBag.Error = "";
                         return RedirectToAction("Index", "Home");
                     }
+                }
+                else
+                {
+                    ModelState.AddModelError("key", "Incorrect Username/Password");
+                    ViewBag.Error = "Incorrect Username/Password";
                 }
             }
             else
@@ -89,6 +108,8 @@ namespace RecipeForSuccess_mvc.Controllers
             return View();
 
         }
+
+       
 
     }
 }

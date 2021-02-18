@@ -57,6 +57,18 @@
 .lead {
     color: black;
 }
-    html, body {
+
+html, body {
     height: 100%;
+}
+
+.disabled {
+    cursor:not-allowed;
+}
+
+li.liveSearchLi {
+    width: 300px;
+    display: inline-block;
+    padding: 10px;
+    position: relative;
 }

@@ -12,7 +12,7 @@
 <body>
     <div class="container-fluid">
         <nav class="navbar navbar-expand-sm text-light navbar-light">
-            <a class="navbar-brand" href="/admin/dashboard">Dashboard</a>
+            <a class="navbar-brand" href="/admin/dashboard">Admin Dashboard</a>
 
 
             <button class="navbar-toggler" data-toggle="collapse" data-target="#collapsibleNavBar">
@@ -24,22 +24,7 @@
                     <li class="nav-item active">
                         <a class="nav-link" href="/home/index">Home</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/home/about">About</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/home/contact">Contact</a>
-                    </li>
-
-                    @if (Session["CurrentUserName"] == null)
-                    {
-                        <li class="nav-item">
-                            <a class="nav-link" href="/account/login">Login</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/account/register">Register</a>
-                        </li>
-                    }
+                       
 
                     @if (Session["CurrentUserName"] != null)
                     {
