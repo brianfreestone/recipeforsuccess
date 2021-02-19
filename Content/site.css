@@ -66,9 +66,33 @@ html, body {
     cursor:not-allowed;
 }
 
-li.liveSearchLi {
+li.userLiveSearchLi, li.recipeLiveSearchLi {
     width: 300px;
     display: inline-block;
     padding: 10px;
     position: relative;
+
 }
+ul#userLiveSearchUl {
+    position: absolute;
+    background: #8a8484;
+    right: -10px;
+    top: 70px;
+    padding:0
+}
+
+li.userLiveSearchLi li.close, li.recipeLiveSearchLi li.close {
+    position: absolute;
+    color: white;
+    opacity: 1 !important;
+    list-style: none;
+    right: 10px;
+    top: 0px;
+    cursor: pointer;
+    z-index: 10;
+}
+
+li.userLiveSearchLi a{
+    color:white;
+}
+

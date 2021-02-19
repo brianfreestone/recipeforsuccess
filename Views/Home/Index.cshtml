@@ -3,19 +3,36 @@
     ViewBag.Title = "Index";
 }
 
-<h2>Index</h2>
-<ul class="nav navbar-nav">
-    <li class="liveSearchLi">
-        <input id="searchText" class="searchText form-control" type="text" placeholder="Search Friends" />
-        <ul id="liveSearchUl"></ul>
-    </li>
-</ul>
+<h2>Home Page</h2>
+@if (Session["CurrentUserName"] != null)
+{
+    <div class="row">
+        <div class="col-6">
 
-@section Scripts {
+            <ul class="nav navbar-nav">
+                <li class="userLiveSearchLi">
+                    <input id="userSearchText" class="searchText form-control" type="text" placeholder="Search Friends" />
+                    <ul id="userLiveSearchUl"></ul>
+                </li>
+            </ul>
+        </div>
+        <div class="col-6">
 
-    <script src="~/Scripts/jquery.signalR-2.2.2.min.js"></script>
-    <script src="/signalr/hubs"></script>
-    <script>
+            <ul class="nav navbar-nav">
+                <li class="recipeLiveSearchLi">
+                    <input id="recipeSearchText" class="searchText form-control" type="text" placeholder="Search Recipes" />
+                    <ul id="recipeLiveSearchUl"></ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+}
+
+    @section Scripts {
+
+        <script src="~/Scripts/jquery.signalR-2.2.2.min.js"></script>
+        <script src="/signalr/hubs"></script>
+        <script>
 
         $(document).ready(function () {
 
@@ -23,10 +40,10 @@
              * Live Search Username
              */
 
-            $('input#searchText').keyup(function () {
+            $('input#userSearchText').keyup(function () {
 
-                var searchVal = $('input#searchText').val();
-                $('ul#liveSearchUl').empty();
+                var searchVal = $('input#userSearchText').val();
+                $('ul#userLiveSearchUl').empty();
 
                 if (searchVal == "" || searchVal == " ") {
                     return false
@@ -35,16 +52,22 @@
                 var url = '/api/livesearchuser';
                 $.get(url, { searchVal: searchVal }, function (data) {
                     if (data.length > 0) {
-                        $('ul#liveSearchUl').append("<li class=close>x</li>");
+                        $('ul#userLiveSearchUl').append("<li class=close>x</li>");
+                    }
+                    for (var i = 0; i < data.length; i++) {
+                        var obj = data[i];
 
-                        for (var i = 0; i < data.length; i++) {
-                            var obj = data[i];
-
-                            $('ul#liveSearchUl').append('<li class=liveSearchLi><a href="/' + obj.username + '">' + obj.first_name + ' ' + obj.last_name + '</a></li>');
-                        }
+                        $('ul#userLiveSearchUl').append('<li class=userLiveSearchLi><a href="/' + obj.username + '">' + obj.first_name + ' ' + obj.last_name + '</a></li>');
                     }
 
+
                 });
+            });
+
+            // friends search click close
+            $("body").on('click', 'ul#userLiveSearchUl li.close', function () {
+                $('ul#userLiveSearchUl').empty();
+                $('input#userSearchText').val('');
             });
             /*
              Hub
@@ -53,15 +76,36 @@
             // Setup Hub Connection
             var hub = $.connection.echo;
 
+            hub.client.test = function (msg) {
+                console.log(msg);
+            }
+
             // connect to the hub
             $.connection.hub
                 .start()
                 .done(function () {
                     hub.server.hello("Signal works");
+
+                    /*
+                     * Add Friend
+                     */
+                    $('a.addFriend').click(function (e) {
+                        e.preventDefault();
+
+                        var friendID = '@ViewBag.UserId'
+
+                        var url = '/account/AddFriend';
+
+                        $.post(url, { friend: friend }, function (data) {
+                            $('.areFriendsDiv').removeClass('alert-info').addClass('alert-warning').html('<p>Pending Friend Request</p>');
+                        }).done(function () {
+                            hub.server.notify(friend);
+                        });
+                    });
                 });
 
         });
 
 
-    </script>
-} 
+        </script>
+    }

@@ -1,0 +1,63 @@
+﻿
+@{
+    ViewBag.Title = ViewBag.UserName;
+}
+
+<h2>Username</h2>
+
+<div class="row">
+    <div class="col-xs-12 col-md-6">
+        <p class="userImg">
+
+        </p>
+        <h2>@ViewBag.ViewingFullName (@ViewBag.UserName)</h2>
+        @if (ViewBag.UserType == "guest")
+        {
+            <div class="friends">
+                @if (ViewBag.NotFriends == "Pending")
+                {
+                    <div class="areFriendsDiv alert alert-warning">
+                        <p>Pending Friend Request.</p>
+                    </div>
+                }
+                else if (ViewBag.NotFriends == "True")
+                {
+                    <div class="areFriendsDiv alert alert-info">
+                        <a href="#" class="addFriend">Add Friend</a>
+                    </div>
+                }
+                else
+                {
+                    <div class="areFriendsDiv alert alert-success">
+                        <span class="glyphicon glyphicon-thumbs-up"></span> friends
+                    </div>
+                }
+            </div>
+        }
+    </div>
+    <div class="col-6">
+       
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+
+            $("a.addFriend").click(function (e) {
+                e.preventDefault();
+                var friend = '@ViewBag.Username';
+
+                var url = "/profile/AddFriend";
+
+                $.post(url, { friend: friend }, function (data) {
+                    $('.addFriendsDiv').removeClass("alert-info").addClass("alert-warning").html('<p>Pending Friend Request</p>');
+                }).done(function () {
+                    hub.server.notify(friend);
+                });
+            });
+
+        });
+
+    </script>
+    }

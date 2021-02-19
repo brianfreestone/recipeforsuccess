@@ -6,16 +6,20 @@ using System.Web.Mvc;
 using RecipeForSuccess.ViewModels;
 using RecipeForSuccess.ServiceLayer;
 
+
 namespace RecipeForSuccess_mvc.Controllers
 {
     public class AccountController : Controller
     {
 
         IUsersService usersService;
+        IFriendsService friendsService;
+        
 
-        public AccountController(IUsersService usersService)
+        public AccountController(IUsersService usersService, IFriendsService friendsService)
         {
             this.usersService = usersService;
+            this.friendsService = friendsService;
         }
 
         // GET: Account/Register
@@ -109,6 +113,60 @@ namespace RecipeForSuccess_mvc.Controllers
 
         }
 
+        public ActionResult Logout()
+        {
+            Session.Abandon();
+            return RedirectToAction("Index", "Home");
+
+        }
+
+        // POST: Account/AddFriend
+        [HttpPost]
+        public void AddFriend(int friendId)
+        {
+            int userID = Convert.ToInt32(Session["CurrentUserID"]);
+
+            friendsService.NewFriendRequest(userID, friendId);
+          
+        }
+
+        [Authorize]
+        public ActionResult Username(string username = "")
+        {
+
+            // get logged in users userid
+            int user_id = Convert.ToInt32(Session["CurrentUserID"]);
+
+            string user = Session["CurrentUserName"].ToString();
+            string u = User.Identity.Name;
+
+            // get logged in user's username
+            ViewBag.UserName = username;
+
+            // viewbag user's full name
+            ViewBag.UserFullName = usersService.GetUserFullNameByUserID(user_id);
+
+            // get viewing's full name
+            ViewBag.ViewingFullName = usersService.GetUserFullNameByUserName(username);
+
+            string userType = "guest";
+            if (username.Equals(user) )
+            {
+                userType = "owner";
+            }
+
+            ViewBag.UserType = userType;
+
+            // check if they are friends
+            if (userType=="guest")
+            {
+
+            }
+
+            return View();
+        }
+
+        
        
 
     }

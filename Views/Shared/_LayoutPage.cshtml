@@ -44,10 +44,10 @@
                     @if (Session["CurrentUserName"] != null)
                     {
                         <li class="nav-item">
-                            <a class="nav-link" href="/home/categories">Categories</a>
+                            <a class="nav-link" href="/home/categories">Users</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/allquestions">Questions</a>
+                            <a class="nav-link" href="/allquestions">Recipes</a>
                         </li>
 
                         <li class="nav-item dropdown">
@@ -55,7 +55,7 @@
                                 <img src="~/Images/user.png" width="20" />
                                 @Session["CurrentUserName"]
                             </a>
-                            <div class="dropdown-menu bg-info">
+                            <div class="dropdown-menu bg-light">
                                 <a class="dropdown-item" href="/account/logout">Logout</a>
                                 <a class="dropdown-item" href="/account/changeprofile">Change Profile</a>
                                 <a class="dropdown-item" href="/account/changepassword">Change Password</a>
