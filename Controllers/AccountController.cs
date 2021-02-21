@@ -5,7 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using RecipeForSuccess.ViewModels;
 using RecipeForSuccess.ServiceLayer;
-
+using System.Web.Security;
 
 namespace RecipeForSuccess_mvc.Controllers
 {
@@ -45,7 +45,7 @@ namespace RecipeForSuccess_mvc.Controllers
                 else if (usersService.UserExistsByUsername(registerVM.username))
                 {
                     ModelState.AddModelError("key", "Username already used");
-                    return View();
+                    return View(registerVM);
                 }
                 else
                 {
@@ -63,7 +63,7 @@ namespace RecipeForSuccess_mvc.Controllers
                 ModelState.AddModelError("key", "Fields must be completed");
             }
 
-            return View();
+            return View(registerVM);
 
         }
 
@@ -84,6 +84,8 @@ namespace RecipeForSuccess_mvc.Controllers
                 UserVM userVM = usersService.GetUserByEmailAndPassword(loginVM.email, loginVM.password);
                 if (userVM.user_id != 0)
                 {
+                    FormsAuthentication.SetAuthCookie(userVM.username, false);
+
                     Session["CurrentUserID"] = userVM.user_id;
                     Session["CurrentUserName"] = userVM.username;
                     Session["CurrentUserIsAdmin"] = userVM.is_admin;
@@ -149,6 +151,9 @@ namespace RecipeForSuccess_mvc.Controllers
             // get viewing's full name
             ViewBag.ViewingFullName = usersService.GetUserFullNameByUserName(username);
 
+            // get viewint's user_id
+            int viewing_id = usersService.GetUserIDByUserName(username);
+
             string userType = "guest";
             if (username.Equals(user) )
             {
@@ -160,14 +165,57 @@ namespace RecipeForSuccess_mvc.Controllers
             // check if they are friends
             if (userType=="guest")
             {
+                
+                string areFriends = friendsService.AreFriends(user_id, viewing_id);
 
+                switch (areFriends)
+                {
+                    case "none":
+                        ViewBag.NotFriends = "True";
+                        break;
+                    case "pending":
+                        ViewBag.NotFriends = "Pending";
+                        break;
+                }
             }
-
             return View();
         }
 
-        
-       
+        [HttpGet]
+        public ActionResult ChangePassword()
+        {
+            int user_id = Convert.ToInt32(Session["CurrentUserID"]);
+            EditUserPasswordVM editUserPasswordVM = new EditUserPasswordVM() { user_id = user_id, password = "", confirm_password = "" };
+            return View(editUserPasswordVM);
+            
+        }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult ChangePassword(EditUserPasswordVM editUserPasswordVM)
+        {
+            if (ModelState.IsValid)
+            {
+                if (!usersService.PasswordExists(editUserPasswordVM.password, editUserPasswordVM.user_id))
+                {
+                    usersService.ChangeUserPassword(editUserPasswordVM);
+
+                    TempData["Success"] = "Password successfully updated!";
+
+                    return RedirectToAction("Index", "Home");
+                }
+                else
+                {
+                    ModelState.AddModelError("password", "Password cannot be a previously used password");
+                    return View();
+                }
+                
+            }
+            else
+            {
+                ModelState.AddModelError("pasword", "Passwords must match");
+                return View(editUserPasswordVM);
+            }
+        }
     }
 }

@@ -3,7 +3,7 @@
     ViewBag.Title = ViewBag.UserName;
 }
 
-<h2>Username</h2>
+<h2>@ViewBag.UserName</h2>
 
 <div class="row">
     <div class="col-xs-12 col-md-6">
@@ -16,19 +16,19 @@
             <div class="friends">
                 @if (ViewBag.NotFriends == "Pending")
                 {
-                    <div class="areFriendsDiv alert alert-warning">
+                    <div class="areFriendsDiv alert alert-secondary">
                         <p>Pending Friend Request.</p>
                     </div>
                 }
                 else if (ViewBag.NotFriends == "True")
                 {
-                    <div class="areFriendsDiv alert alert-info">
+                    <div class="areFriendsDiv alert alert-secondary">
                         <a href="#" class="addFriend">Add Friend</a>
                     </div>
                 }
                 else
                 {
-                    <div class="areFriendsDiv alert alert-success">
+                    <div class="areFriendsDiv alert alert-secondary">
                         <span class="glyphicon glyphicon-thumbs-up"></span> friends
                     </div>
                 }
@@ -36,28 +36,54 @@
         }
     </div>
     <div class="col-6">
-       
+
     </div>
 </div>
 
 @section Scripts {
+    <script src="~/Scripts/jquery.signalR-2.2.2.min.js"></script>
+    <script src="/signalr/hubs"></script>
     <script>
         $(document).ready(function () {
 
-            $("a.addFriend").click(function (e) {
-                e.preventDefault();
-                var friend = '@ViewBag.Username';
+           /*
+             Hub
+             */
 
-                var url = "/profile/AddFriend";
+            // Setup Hub Connection
+            var hub = $.connection.echo;
 
-                $.post(url, { friend: friend }, function (data) {
-                    $('.addFriendsDiv').removeClass("alert-info").addClass("alert-warning").html('<p>Pending Friend Request</p>');
-                }).done(function () {
-                    hub.server.notify(friend);
+            hub.client.test = function (msg) {
+                console.log(msg);
+            }
+
+            // connect to the hub
+            $.connection.hub
+                .start()
+                .done(function () {
+                    hub.server.hello("Signal works");
+
+                    /*
+                     * Add Friend
+                     */
+                    $('a.addFriend').click(function (e) {
+                        e.preventDefault();
+
+                        var friend = '@ViewBag.UserName'
+
+                        var url = '/profile/AddFriend';
+
+                        $.post(url, { friend: friend }, function (data) {
+                            $('.areFriendsDiv').removeClass('alert-info').addClass('alert-warning').html('<p>Pending Friend Request</p>');
+                        }).done(function () {
+                            hub.server.notify(friend);
+                        });
+                    });
                 });
-            });
+
+            
 
         });
 
     </script>
-    }
+}

@@ -4,6 +4,8 @@
 }
 
 <h2>Home Page</h2>
+
+
 @if (Session["CurrentUserName"] != null)
 {
     <div class="row">
@@ -28,11 +30,11 @@
     </div>
 }
 
-    @section Scripts {
+@section Scripts {
 
-        <script src="~/Scripts/jquery.signalR-2.2.2.min.js"></script>
-        <script src="/signalr/hubs"></script>
-        <script>
+    <script src="~/Scripts/jquery.signalR-2.2.2.min.js"></script>
+    <script src="/signalr/hubs"></script>
+    <script>
 
         $(document).ready(function () {
 
@@ -50,7 +52,7 @@
                 }
 
                 var url = '/api/livesearchuser';
-                $.get(url, { searchVal: searchVal }, function (data) {
+                $.get(url, { searchVal: searchVal, userName: '@ViewBag.Username' }, function (data) {
                     if (data.length > 0) {
                         $('ul#userLiveSearchUl').append("<li class=close>x</li>");
                     }
@@ -69,6 +71,8 @@
                 $('ul#userLiveSearchUl').empty();
                 $('input#userSearchText').val('');
             });
+
+
             /*
              Hub
              */
@@ -78,6 +82,22 @@
 
             hub.client.test = function (msg) {
                 console.log(msg);
+            }
+
+            hub.client.friendRequestNotify = function (friend, requestCount) {
+                $("span.friendRequestNotification." + friend + "> span").text(requestCount);
+                $("span.friendRequestNotification." + friend).addClass("green");
+            }
+
+            hub.client.friendRequestCount = function (username, count) {
+                if (count > 0) {
+                    $("span.friendRequestNotification." + username + "> span").text(count);
+                }
+                else {
+                    $("span.friendRequestNotification." + username + "> span").text("");
+                    $("span.friendRequestNotification." + username).removeClass("green");
+
+                }
             }
 
             // connect to the hub
@@ -103,9 +123,62 @@
                         });
                     });
                 });
+            /*
+             * Display friend requests
+             */
 
-        });
+            $("body").on("click", "span.friendRequestNotification.green", function () {
+
+                $('ul#friendRequestNotifUL').empty();
 
 
-        </script>
-    }
+                var url = '/profile/DisplayFriendRequests';
+                $.post(url, {}, function (data) {
+                    if (data.length > 0) {
+                        $('ul#friendRequestNotifUL').append("<li class=close>x</li>");
+                    }
+                    for (var i = 0; i < data.length; i++) {
+                        var obj = data[i];
+
+                        $('ul#friendRequestNotifUL').append('<li class=friendRequestNotificationLi><a href="/' + obj.username + '">' + obj.first_name + ' ' + obj.last_name + '</a> ' + '<a class=accept href="#" data-id="' + obj.user_id + '"><span><i class="fa fa-check"></i></span></a>' + ' ' + '<a class=decline href="#" data-id=' + obj.id + '"><span><i class="fa fa-window-close"></i></span></a></li>');
+                    }
+
+                });
+            });
+
+            // friends search click close
+            $("body").on('click', 'ul#friendRequestNotifUL li.close', function () {
+                $('ul#friendRequestNotifUL').empty();
+            });
+
+
+
+            ///////////////////////////////////////////////
+            /*
+           * Accept friend requests
+           */
+
+            $("body").on("click", "a.accept", function (e) {
+                e.preventDefault();
+
+                var $this = $(this);
+                var friendId = $this.data("id");
+
+                var url = 'profile/AcceptFriendRequest';
+                $.post(url, { friendId: friendId }, function (data) {
+                }).done(function () {
+                    $this.parent().fadeOut("fast");
+                    hub.server.getFriendRequestCount(@Session["CurrentUserID"]);
+                   //hub.server.getFriendCount(friendId);
+
+                });
+            });
+
+
+            ///////////////////////////////////////////////
+
+        }); // end ready
+
+
+    </script>
+}

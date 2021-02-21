@@ -11,8 +11,8 @@
 </head>
 <body>
     <div class="container-fluid">
-        <nav class="navbar navbar-expand-sm text-light navbar-light">
-            <a class="navbar-brand" href="#">RecipeForSuccess</a>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <a class="navbar-brand" href="#">Recipe For Success</a>
 
 
             <button class="navbar-toggler" data-toggle="collapse" data-target="#collapsibleNavBar">
@@ -24,9 +24,7 @@
                     <li class="nav-item active">
                         <a class="nav-link" href="/home/index">Home</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/home/about">About</a>
-                    </li>
+                    
                     <li class="nav-item">
                         <a class="nav-link" href="/home/contact">Contact</a>
                     </li>
@@ -44,8 +42,20 @@
                     @if (Session["CurrentUserName"] != null)
                     {
                         <li class="nav-item">
-                            <a class="nav-link" href="/home/categories">Users</a>
+                            <a class="nav-link" href="/@Session["CurrentUserName"].ToString()">Friends</a>
                         </li>
+                        <li class="nav-item friendRequestCountLi">
+                            @if (ViewBag.FriendRequestCount != null)
+                            {
+                                <span class="friendRequestNotification @Session["CurrentUserName"].ToString() green"><span><i class="fa fa-user"></i>@ViewBag.FriendRequestCount</span></span>
+                            }
+                            else
+                            {
+                                <span class="friendRequestNotification @Session["CurrentUserName"].ToString()"><span><i class="fa fa-user"></i></span></span>
+                            }
+                            <ul id="friendRequestNotifUL"></ul>
+                        </li>
+                        
                         <li class="nav-item">
                             <a class="nav-link" href="/allquestions">Recipes</a>
                         </li>
@@ -57,7 +67,7 @@
                             </a>
                             <div class="dropdown-menu bg-light">
                                 <a class="dropdown-item" href="/account/logout">Logout</a>
-                                <a class="dropdown-item" href="/account/changeprofile">Change Profile</a>
+                                <a class="dropdown-item" href="/account/updateprofile">Update Profile</a>
                                 <a class="dropdown-item" href="/account/changepassword">Change Password</a>
                             </div>
                         </li>
@@ -65,17 +75,15 @@
                 </ul>
             </div>
 
-            <form class="form-inline" action="/home/search">
-                <input type="search" class="form-control mr-sm-2" style="width:150px" placeholder="Search" name="str">
-                <button class="btn btn-success">Search</button>
-            </form>
+
         </nav>
+        @Html.Partial("_NotificationPartial")
         @RenderBody()
     </div>
 
-
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/site")
     @RenderSection("scripts", required: false)
 </body>
 </html>

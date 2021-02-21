@@ -16,7 +16,8 @@
                 <asp:Parameter Name="email" />
             </SelectParameters>
         </asp:SqlDataSource>
-    </form>
 </body>
 </html>
 <asp:SqlDataSource runat="server" ConnectionString="Data Source=INFO4430-rs-dev\sqlexpress;Initial Catalog=recipesuccess;Persist Security Info=True;User ID=sa;Password=IPp2muWQ1f5s" ProviderName="System.Data.SqlClient" SelectCommand="SELECT users.username, users.email, passwords.password FROM users INNER JOIN passwords_users ON users.user_id = passwords_users.user_id INNER JOIN passwords ON passwords_users.password_id = passwords.password_id"></asp:SqlDataSource>
+    <asp:SqlDataSource ID="SqlDataSource2" runat="server"></asp:SqlDataSource>
+    </form>

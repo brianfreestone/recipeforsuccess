@@ -81,7 +81,9 @@ ul#userLiveSearchUl {
     padding:0
 }
 
-li.userLiveSearchLi li.close, li.recipeLiveSearchLi li.close {
+li.userLiveSearchLi li.close,
+li.recipeLiveSearchLi li.close,
+ul#friendRequestNotifUL li.close {
     position: absolute;
     color: white;
     opacity: 1 !important;
@@ -92,7 +94,38 @@ li.userLiveSearchLi li.close, li.recipeLiveSearchLi li.close {
     z-index: 10;
 }
 
-li.userLiveSearchLi a{
-    color:white;
+li.userLiveSearchLi a,
+li.friendRequestNotificationLi a{
+    color: white;
 }
+
+.friendRequestNotification{
+    color: gray;
+
+}
+
+.friendRequestNotification.green {
+    color: green;
+    cursor: pointer;
+}
+
+.friendRequestCountLi {
+    position: relative;
+
+}
+
+ul#friendRequestNotifUL {
+    position: absolute;
+    right: 20px;
+    top: 50px;
+    background: #8a8484;
+}
+
+li.friendRequestNotificationLi {
+    width: 200px;
+    display:block;
+    padding:10px;
+}
+
+
 
