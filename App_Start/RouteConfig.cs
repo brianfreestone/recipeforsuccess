@@ -24,13 +24,13 @@ namespace RecipeForSuccess_mvc
             routes.MapRoute("Account", "{username}", new { controller = "Account", action = "Username" });
             routes.MapRoute("CreateAccount", "Account/Register", new { controller = "Account", action = "Register" });
 
-            routes.MapRoute("Default", "Account/Login", new { controller = "Account", action = "Login" });
+            //routes.MapRoute("Default", "Home/Index", new { controller = "Home", action = "Index" });
 
-            //routes.MapRoute(
-            //    name: "Default",
-            //    url: "{controller}/{action}/{id}",
-            //    defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional }
-            //);
+            routes.MapRoute(
+                name: "Default",
+                url: "{controller}/{action}",
+                defaults: new { controller = "Home", action = "Index"}
+            );
         }
     }
 }

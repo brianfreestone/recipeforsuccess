@@ -90,19 +90,19 @@ namespace RecipeForSuccess_mvc.Controllers
                     Session["CurrentUserName"] = userVM.username;
                     Session["CurrentUserIsAdmin"] = userVM.is_admin;
 
-                    if (userVM.is_admin)
-                    {
-                        return RedirectToRoute(new { area = "Admin", controller = "AdminHome", action = "Index" });
-                    }
-                    else
-                    {
-                        ViewBag.Error = "";
+                    //if (userVM.is_admin)
+                    //{
+                    //    return RedirectToRoute(new { area = "Admin", controller = "AdminHome", action = "Index" });
+                    //}
+                    //else
+                    //{
+                    //    ViewBag.Error = "";
                         return RedirectToAction("Index", "Home");
-                    }
+                    //}
                 }
                 else
                 {
-                    ModelState.AddModelError("key", "Incorrect Username/Password");
+                    ModelState.AddModelError("password", "Incorrect Username/Password");
                     ViewBag.Error = "Incorrect Username/Password";
                 }
             }

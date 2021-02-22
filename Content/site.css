@@ -100,9 +100,12 @@ li.friendRequestNotificationLi a{
 }
 
 .friendRequestNotification{
-    color: gray;
+    color: lightblue;
+  
 
 }
+
+
 
 .friendRequestNotification.green {
     color: green;
@@ -111,12 +114,12 @@ li.friendRequestNotificationLi a{
 
 .friendRequestCountLi {
     position: relative;
-
+    padding-top:7px;
 }
 
 ul#friendRequestNotifUL {
     position: absolute;
-    right: 20px;
+    right: -100px;
     top: 50px;
     background: #8a8484;
 }
@@ -127,5 +130,11 @@ li.friendRequestNotificationLi {
     padding:10px;
 }
 
+
+.adminarea {
+    padding-top:15px;
+    color: white;
+    cursor: pointer;
+}
 
 

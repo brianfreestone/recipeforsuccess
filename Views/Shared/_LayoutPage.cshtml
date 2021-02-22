@@ -12,7 +12,11 @@
 <body>
     <div class="container-fluid">
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-            <a class="navbar-brand" href="#">Recipe For Success</a>
+            <a class="navbar-brand" href="/">
+                <img src="~/Images/Kitchenlogo.bmp" alt="kitchen logo" width="40" />
+            </a>
+
+            <a class="navbar-brand" href="/">Recipe For Success</a>
 
 
             <button class="navbar-toggler" data-toggle="collapse" data-target="#collapsibleNavBar">
@@ -24,10 +28,10 @@
                     <li class="nav-item active">
                         <a class="nav-link" href="/home/index">Home</a>
                     </li>
-                    
-                    <li class="nav-item">
-                        <a class="nav-link" href="/home/contact">Contact</a>
-                    </li>
+
+                    @*<li class="nav-item">
+                <a class="nav-link" href="/home/contact">Contact</a>
+            </li>*@
 
                     @if (Session["CurrentUserName"] == null)
                     {
@@ -41,6 +45,7 @@
 
                     @if (Session["CurrentUserName"] != null)
                     {
+
                         <li class="nav-item">
                             <a class="nav-link" href="/@Session["CurrentUserName"].ToString()">Friends</a>
                         </li>
@@ -55,9 +60,9 @@
                             }
                             <ul id="friendRequestNotifUL"></ul>
                         </li>
-                        
+
                         <li class="nav-item">
-                            <a class="nav-link" href="/allquestions">Recipes</a>
+                            <a class="nav-link" href="/recipes/index">Recipes</a>
                         </li>
 
                         <li class="nav-item dropdown">
@@ -67,12 +72,19 @@
                             </a>
                             <div class="dropdown-menu bg-light">
                                 <a class="dropdown-item" href="/account/logout">Logout</a>
-                                <a class="dropdown-item" href="/account/updateprofile">Update Profile</a>
+                                @*<a class="dropdown-item" href="/account/updateprofile">Update Profile</a>*@
                                 <a class="dropdown-item" href="/account/changepassword">Change Password</a>
                             </div>
                         </li>
                     }
+                    @if (Session["CurrentUserIsAdmin"] != null && Convert.ToBoolean(Session["CurrentUserIsAdmin"]) == true)
+                    {
+                        <li class="nav-item mr-sm-2">
+                            <a href="/admin/dashboard/index"><span class="fa fa-gear adminarea"></span></a>
+                        </li>
+                    }
                 </ul>
+
             </div>
 
 

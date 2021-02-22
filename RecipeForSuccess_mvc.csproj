@@ -220,6 +220,7 @@
     <Content Include="Images\avatar.png" />
     <Content Include="Images\down-color.png" />
     <Content Include="Images\down-empty.png" />
+    <Content Include="Images\Kitchenlogo.bmp" />
     <Content Include="Images\map.svg" />
     <Content Include="Images\up-color.png" />
     <Content Include="Images\up-empty.png" />
@@ -396,6 +397,7 @@
     <Compile Include="Areas\Admin\Controllers\DashboardController.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\ProfileController.cs" />
+    <Compile Include="Controllers\RecipesController.cs" />
     <Compile Include="EchoHub.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -435,6 +437,7 @@
     <Content Include="Scripts\popper-utils.js.map" />
     <Content Include="Views\Account\ChangePassword.cshtml" />
     <Content Include="Views\Shared\_NotificationPartial.cshtml" />
+    <Content Include="Views\Recipes\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
