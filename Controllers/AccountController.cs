@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using RecipeForSuccess.ViewModels;
 using RecipeForSuccess.ServiceLayer;
 using System.Web.Security;
+using RecipeForSuccess_mvc.CustomFilters;
 
 namespace RecipeForSuccess_mvc.Controllers
 {
@@ -37,12 +38,12 @@ namespace RecipeForSuccess_mvc.Controllers
             if (ModelState.IsValid)
             {
 
-                if (usersService.UserExistsByEmail(registerVM.email))
+                if (usersService.UserExistsByEmail(registerVM.Email))
                 {
                     ModelState.AddModelError("key", "Email already used");
                     return View();
                 }
-                else if (usersService.UserExistsByUsername(registerVM.username))
+                else if (usersService.UserExistsByUsername(registerVM.Username))
                 {
                     ModelState.AddModelError("key", "Username already used");
                     return View(registerVM);
@@ -51,7 +52,7 @@ namespace RecipeForSuccess_mvc.Controllers
                 {
                     int userID = usersService.InsertUser(registerVM);
                     Session["CurrentUserID"] = userID;
-                    Session["CurrentUserName"] = registerVM.username;
+                    Session["CurrentUserName"] = registerVM.Username;
                     Session["CurrentUserIsAdmin"] = false;
 
                     return RedirectToAction("Index", "Home");
@@ -81,14 +82,14 @@ namespace RecipeForSuccess_mvc.Controllers
         {
             if (ModelState.IsValid)
             {
-                UserVM userVM = usersService.GetUserByEmailAndPassword(loginVM.email, loginVM.password);
-                if (userVM.user_id != 0)
+                UserVM userVM = usersService.GetUserByEmailAndPassword(loginVM.Email, loginVM.Password);
+                if (userVM.User_id != 0)
                 {
-                    FormsAuthentication.SetAuthCookie(userVM.username, false);
+                    FormsAuthentication.SetAuthCookie(userVM.Username, false);
 
-                    Session["CurrentUserID"] = userVM.user_id;
-                    Session["CurrentUserName"] = userVM.username;
-                    Session["CurrentUserIsAdmin"] = userVM.is_admin;
+                    Session["CurrentUserID"] = userVM.User_id;
+                    Session["CurrentUserName"] = userVM.Username;
+                    Session["CurrentUserIsAdmin"] = userVM.Is_admin;
 
                     //if (userVM.is_admin)
                     //{
@@ -133,6 +134,7 @@ namespace RecipeForSuccess_mvc.Controllers
         }
 
         [Authorize]
+        [UserAuthorizationFilterAttribute]
         public ActionResult Username(string username = "")
         {
 
@@ -182,21 +184,23 @@ namespace RecipeForSuccess_mvc.Controllers
         }
 
         [HttpGet]
+        [UserAuthorizationFilterAttribute]
         public ActionResult ChangePassword()
         {
             int user_id = Convert.ToInt32(Session["CurrentUserID"]);
-            EditUserPasswordVM editUserPasswordVM = new EditUserPasswordVM() { user_id = user_id, password = "", confirm_password = "" };
+            EditUserPasswordVM editUserPasswordVM = new EditUserPasswordVM() { User_id = user_id, Password = "", Confirm_password = "" };
             return View(editUserPasswordVM);
             
         }
 
         [HttpPost]
+        [UserAuthorizationFilterAttribute]
         [ValidateAntiForgeryToken]
         public ActionResult ChangePassword(EditUserPasswordVM editUserPasswordVM)
         {
             if (ModelState.IsValid)
             {
-                if (!usersService.PasswordExists(editUserPasswordVM.password, editUserPasswordVM.user_id))
+                if (!usersService.PasswordExists(editUserPasswordVM.Password, editUserPasswordVM.User_id))
                 {
                     usersService.ChangeUserPassword(editUserPasswordVM);
 

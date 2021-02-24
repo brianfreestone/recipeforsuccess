@@ -17,51 +17,51 @@
             @Html.ValidationSummary(true, "All fields must be filled out!" , new { @class = "text-danger" })
 
             <div class="form-group">
-                @Html.LabelFor(model => model.first_name, htmlAttributes: new { @class = "control-label col-md-4" })
+                @Html.LabelFor(model => model.First_name, htmlAttributes: new { @class = "control-label col-md-4" })
 
-                @Html.EditorFor(model => model.first_name, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.first_name, "", new { @class = "text-danger" })
-
-            </div>
-
-            <div class="form-group">
-                @Html.LabelFor(model => model.last_name, htmlAttributes: new { @class = "control-label col-md-4" })
-
-                @Html.EditorFor(model => model.last_name, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.last_name, "", new { @class = "text-danger" })
+                @Html.EditorFor(model => model.First_name, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.First_name, "", new { @class = "text-danger" })
 
             </div>
 
             <div class="form-group">
-                @Html.LabelFor(model => model.email, htmlAttributes: new { @class = "control-label col-md-4" })
+                @Html.LabelFor(model => model.Last_name, htmlAttributes: new { @class = "control-label col-md-4" })
+
+                @Html.EditorFor(model => model.Last_name, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Last_name, "", new { @class = "text-danger" })
+
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label col-md-4" })
                 <small id="email-exists" class="text-danger col-md-3"></small>
-                @Html.EditorFor(model => model.email, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.email, "", new { id = "email-feedback", @class = "text-danger" })
+                @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Email, "", new { id = "email-feedback", @class = "text-danger" })
                 <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
 
             </div>
 
             <div class="form-group">
-                @Html.LabelFor(model => model.username, htmlAttributes: new { @class = "control-label col-md-3" })
+                @Html.LabelFor(model => model.Username, htmlAttributes: new { @class = "control-label col-md-3" })
                 <small id="username-exists" class="text-danger col-md-3"></small>
-                @Html.ValidationMessageFor(model => model.username, "", new { id = "username-feedback", @class = "text-danger col-md-3 text-sm-left" })
-                @Html.EditorFor(model => model.username, new { htmlAttributes = new { @class = "form-control", minlength = "5"} })
+                @Html.ValidationMessageFor(model => model.Username, "", new { id = "username-feedback", @class = "text-danger col-md-3 text-sm-left" })
+                @Html.EditorFor(model => model.Username, new { htmlAttributes = new { @class = "form-control", minlength = "5"} })
 
             </div>
 
 
             <div class="form-group">
-                @Html.LabelFor(model => model.password, htmlAttributes: new { @class = "control-label col-md-4" })
+                @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "control-label col-md-4" })
 
                 <input type="password" id="txtPassword"name="password" required="required" minlength="8" class="form-control" />
                 @*@Html.PasswordFor(model => model.password, new { @class = "form-control" })*@
-                @Html.ValidationMessageFor(model => model.password, "", new { @class = "text-danger text-sm-left" })
+                @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger text-sm-left" })
 
             </div>
 
             <div class="form-group">
-                @Html.LabelFor(model => model.confirm_password, htmlAttributes: new { @class = "control-label col-md-5" })
-                @Html.ValidationMessageFor(model => model.confirm_password, "", new { @class = "text-danger col-md-4 text-sm-left" })
+                @Html.LabelFor(model => model.Confirm_password, htmlAttributes: new { @class = "control-label col-md-5" })
+                @Html.ValidationMessageFor(model => model.Confirm_password, "", new { @class = "text-danger col-md-4 text-sm-left" })
                 <input type="password" id="txtConfirmPassword" name="confirm_password" required="required" minlength="8" class="form-control" />
                 @*@Html.PasswordFor(model => model.confirm_password, new { @class = "form-control" })*@
 

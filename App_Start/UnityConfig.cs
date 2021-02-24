@@ -15,6 +15,8 @@ namespace RecipeForSuccess_mvc
 
             container.RegisterType<IUsersService, UsersService>();
             container.RegisterType<IFriendsService, FriendsService>();
+            container.RegisterType<IRecipesService, RecipesService>();
+
 
 
             DependencyResolver.SetResolver(new Unity.Mvc5.UnityDependencyResolver(container));

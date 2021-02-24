@@ -386,6 +386,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="APIControllers\EmailController.cs" />
+    <Compile Include="APIControllers\IngredientController.cs" />
     <Compile Include="APIControllers\LiveSearchUserController.cs" />
     <Compile Include="APIControllers\UsernameController.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
@@ -398,6 +399,8 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\ProfileController.cs" />
     <Compile Include="Controllers\RecipesController.cs" />
+    <Compile Include="CustomFilters\AdminAuthorizationFilter.cs" />
+    <Compile Include="CustomFilters\UserAuthorizationFilter.cs" />
     <Compile Include="EchoHub.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -438,6 +441,10 @@
     <Content Include="Views\Account\ChangePassword.cshtml" />
     <Content Include="Views\Shared\_NotificationPartial.cshtml" />
     <Content Include="Views\Recipes\Index.cshtml" />
+    <Content Include="Views\Recipes\AddRecipes.cshtml" />
+    <Content Include="Views\Recipes\AddIngredient.cshtml" />
+    <Content Include="Views\Shared\_TableDataPartial.cshtml" />
+    <Content Include="Views\Recipes\AddRecipe.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

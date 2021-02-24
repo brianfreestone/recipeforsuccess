@@ -19,5 +19,14 @@
 </body>
 </html>
 <asp:SqlDataSource runat="server" ConnectionString="Data Source=INFO4430-rs-dev\sqlexpress;Initial Catalog=recipesuccess;Persist Security Info=True;User ID=sa;Password=IPp2muWQ1f5s" ProviderName="System.Data.SqlClient" SelectCommand="SELECT users.username, users.email, passwords.password FROM users INNER JOIN passwords_users ON users.user_id = passwords_users.user_id INNER JOIN passwords ON passwords_users.password_id = passwords.password_id"></asp:SqlDataSource>
-    <asp:SqlDataSource ID="SqlDataSource2" runat="server"></asp:SqlDataSource>
+    <asp:SqlDataSource ID="SqlDataSource2" runat="server" ConnectionString="Data Source=INFO4430-rs-dev\sqlexpress;Initial Catalog=recipesuccess;Persist Security Info=True;User ID=sa;Password=IPp2muWQ1f5s" ProviderName="System.Data.SqlClient" SelectCommand="SELECT recipe_instruction.measure_value, ingredient.name, recipe_instruction.instruction, recipe_instruction.ingredient_id FROM recipe_instruction INNER JOIN ingredient ON recipe_instruction.ingredient_id = ingredient.ingredient_id WHERE (recipe_instruction.recipe_id = @recipe_id)">
+        <SelectParameters>
+            <asp:Parameter Name="recipe_id" />
+        </SelectParameters>
+    </asp:SqlDataSource>
+    <asp:SqlDataSource ID="SqlDataSource3" runat="server" ConnectionString="Data Source=INFO4430-rs-dev\sqlexpress;Initial Catalog=recipesuccess;Persist Security Info=True;User ID=sa;Password=IPp2muWQ1f5s" ProviderName="System.Data.SqlClient" SelectCommand="SELECT recipe_instruction.recipe_id, ingredient.ingredient_id, ingredient.name, ingredient.measure_value, recipe_instruction.recipe_instruction_id, recipe_instruction.instruction FROM ingredient RIGHT OUTER JOIN recipe_instruction ON ingredient.ingredient_id = recipe_instruction.ingredient_id WHERE (recipe_instruction.recipe_id = @recipe_id)">
+        <SelectParameters>
+            <asp:Parameter Name="recipe_id" />
+        </SelectParameters>
+    </asp:SqlDataSource>
     </form>

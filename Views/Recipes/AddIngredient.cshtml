@@ -1,0 +1,97 @@
+﻿@model List<RecipeForSuccess.ViewModels.IngredientVM>
+@{
+    ViewBag.Title = "AddIngredients";
+}
+
+<h2>Add Ingredients To @ViewBag.RecipeName</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table" id="#ingredientsTable">
+    <tr>
+        <th>
+            Measurement
+        </th>
+        <th>
+            Ingredient Name
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.MeasureValue)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IngredientName)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+            </td>
+        </tr>
+    }
+
+</table>
+
+
+<input type="text" id="txtMeasure" placeholder="Measure" />
+<input type="text" id="txtIngredient" placeholder="Ingredient Name" />
+
+
+<button type="button" id="btnAdd">Add</button>
+
+@section scripts{
+
+    <script>
+        $(document).ready(function () {
+
+            // add ajax post to add new ingredient
+            $("#btnAdd").on("click", function (e) {
+
+                e.preventDefault();
+
+                var url = "/Recipes/AddIngredient"
+
+                var measure = $("#txtMeasure").val();
+                var ingredient = $("#txtIngredient").val();
+
+                $.post(url, { measure: measure, ingredient: ingredient }, function (data) {
+
+                    for (var i = 0; i < data.length; i++) {
+                        var obj = data[i];
+
+                        var tr = '<tr><td>' + obj.MeasureValue + '</td><td>' + obj.IngredientName + '</td></tr>';
+                        $("#ingredientsTable").find("tbody").append(tr);
+                    }
+                    
+                   
+
+                });
+
+
+
+                //$.ajax(
+                //    {
+                //        type: "POST", //HTTP POST Method
+                //        url: "/Recipes/AddIngredient", // Controller/View
+                //        data: { //Passing data
+                //            //Reading text box values using Jquery
+                //            measure: measure,
+                //            ingredient: ingredient
+                //        },
+                //        success: function () {
+                //            var tr = '<tr><td>' + measure + '</td><td>' + ingredient + '</td></tr>';
+                //            $("#ingredientsTable").append("<tr><td>" + measure + "</td><td>" + ingredient + "</td></tr>");
+                //        }
+
+                //    });
+
+            });
+        });
+    </script>
+}

@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using RecipeForSuccess.ServiceLayer;
 using RecipeForSuccess.ViewModels;
+using RecipeForSuccess_mvc.CustomFilters;
 
 namespace RecipeForSuccess_mvc.Controllers
 {
@@ -26,6 +27,7 @@ namespace RecipeForSuccess_mvc.Controllers
 
 
         [HttpPost]
+        [UserAuthorizationFilterAttribute]
         public void AddFriend(string friend)
         {
             int id1 = Convert.ToInt32(Session["CurrentUserID"]);

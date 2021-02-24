@@ -3,31 +3,37 @@
     ViewBag.Title = "Index";
 }
 
-<h2>Home Page</h2>
 
 
-@*@if (Session["CurrentUserName"] != null)
+@if (Session["CurrentUserName"] == null)
 {
-    <div class="row">
-        <div class="col-6">
+    //place homepage items here, carousel,etc
 
-            <ul class="nav navbar-nav">
-                <li class="userLiveSearchLi">
-                    <input id="userSearchText" class="searchText form-control" type="text" placeholder="Search Friends" />
-                    <ul id="userLiveSearchUl"></ul>
-                </li>
-            </ul>
-        </div>
-        <div class="col-6">
+}
 
-            <ul class="nav navbar-nav">
-                <li class="recipeLiveSearchLi">
-                    <input id="recipeSearchText" class="searchText form-control" type="text" placeholder="Search Recipes" />
-                    <ul id="recipeLiveSearchUl"></ul>
-                </li>
-            </ul>
-        </div>
+ @*search goes here*@
+    @*@if (Session["CurrentUserName"] != null)
+{
+<div class="row">
+    <div class="col-6">
+
+        <ul class="nav navbar-nav">
+            <li class="userLiveSearchLi">
+                <input id="userSearchText" class="searchText form-control" type="text" placeholder="Search Friends" />
+                <ul id="userLiveSearchUl"></ul>
+            </li>
+        </ul>
     </div>
+    <div class="col-6">
+
+        <ul class="nav navbar-nav">
+            <li class="recipeLiveSearchLi">
+                <input id="recipeSearchText" class="searchText form-control" type="text" placeholder="Search Recipes" />
+                <ul id="recipeLiveSearchUl"></ul>
+            </li>
+        </ul>
+    </div>
+</div>
 }*@
 
 @section Scripts {

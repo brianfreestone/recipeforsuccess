@@ -13,6 +13,7 @@ namespace RecipeForSuccess_mvc
         {
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
+            routes.MapRoute("ViewRecipes", "Recipes/Index", new { controller = "Recipes", action = "Index" });
 
             routes.MapRoute("ChangePassword", "Account/ChangePassword", new { controller = "Account", action = "ChangePassword" });
 
