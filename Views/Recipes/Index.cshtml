@@ -9,23 +9,23 @@
     <h2>My Recipes</h2>
 
     <p>
-        @Html.ActionLink("Create New", "AddRecipe")
+        @Html.ActionLink("Create New", "AddRecipe", new object { }, new {@class="btn btn-primary"})
     </p>
-    <table class="table">
+    <table class="table table-responsive-sm">
         <tr>
-
+            <th></th>
             <th>
                 @Html.DisplayNameFor(model => model.Name)
             </th>
 
-            <th>
+            <th class="created">
                 @Html.DisplayNameFor(model => model.Created)
             </th>
-            <th>
+            <th class="description">
                 @Html.DisplayNameFor(model => model.Description)
             </th>
 
-            <th>
+            <th class="mealType">
                 @Html.DisplayNameFor(model => model.Meal_type_name)
             </th>
             <th>
@@ -37,19 +37,21 @@
         @foreach (var item in Model)
         {
             <tr>
-
+                <td>
+                    <img src="~/Uploads/@(item.recipe_id).jpg" id="recipePic" />
+                </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Name)
                 </td>
 
-                <td>
+                <td class="created">
                     @Html.DisplayFor(modelItem => item.Created)
                 </td>
-                <td>
+                <td class="description">
                     @Html.DisplayFor(modelItem => item.Description)
                 </td>
 
-                <td>
+                <td class="mealType">
                     @Html.DisplayFor(modelItem => item.Meal_type_name)
                 </td>
                 <td>
@@ -65,8 +67,8 @@
                 </td>
                 <td>
                     @*@Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                    @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                    @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })*@
+                        @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                        @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })*@
                 </td>
             </tr>
         }
@@ -86,7 +88,7 @@
                 var $this = $(this);
                 var favClass = $this.find("span").attr('class');
                 console.log("favClass: " + favClass);
- 
+
                 var classesArray = favClass.split(" ");
                 console.log("classes array: " + classesArray);
 

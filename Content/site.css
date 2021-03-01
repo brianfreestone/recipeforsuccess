@@ -169,3 +169,110 @@ span.fa-heart-o {
     /*color: red;*/
     cursor: pointer;
 }
+
+#recipePic {
+    width: 150px;
+}
+
+
+#addRecipe {
+    margin: 0 auto;
+}
+
+
+.validator{
+    font-size:x-small;
+    margin-right: 15px;
+    /*width: 35px;*/
+    display: inline;
+    padding: 5px;
+    border:1px solid black;
+    border-radius:2px;
+
+}
+
+.validator-fail{
+    background-color: firebrick;
+    color: white;
+    border-color: red;
+}
+
+.validator-success {
+    background-color: forestgreen;
+    color: white;
+    border-color: green;
+}
+.validator-row {
+    margin-bottom:8px;
+}
+
+@media only screen and (min-width:320px) {
+
+
+    #recipePic {
+        width: 35px;
+    }
+
+    .created {
+        display: none;
+    }
+    .description {
+        display: none;
+    }
+    .mealType {
+        display: none;
+    }
+ 
+}
+
+@media only screen and (min-width:375px){
+
+    #recipePic {
+        width: 40px;
+    }
+    .created {
+        display: none;
+    }
+    .description {
+        display:table-cell;
+    }
+    .mealType {
+        display: none;
+    }
+}
+
+@media only screen and (min-width:480px) {
+
+    #recipePic {
+        width: 60px;
+    }
+
+    .created {
+        display: none;
+    }
+
+    .description {
+        display: table-cell;
+    }
+
+    .mealType {
+        display: none;
+    }
+}
+
+
+@media only screen and (min-width:600px) {
+
+    #recipePic {
+        width: 70px;
+    }
+    .created, .description, .mealType {
+        display: table-cell;
+        
+    }
+}
+
+
+#imgPreview{
+    margin-top:15px;
+}

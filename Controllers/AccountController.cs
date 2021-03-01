@@ -15,7 +15,7 @@ namespace RecipeForSuccess_mvc.Controllers
 
         IUsersService usersService;
         IFriendsService friendsService;
-        
+
 
         public AccountController(IUsersService usersService, IFriendsService friendsService)
         {
@@ -40,23 +40,25 @@ namespace RecipeForSuccess_mvc.Controllers
 
                 if (usersService.UserExistsByEmail(registerVM.Email))
                 {
-                    ModelState.AddModelError("key", "Email already used");
-                    return View();
-                }
-                else if (usersService.UserExistsByUsername(registerVM.Username))
-                {
-                    ModelState.AddModelError("key", "Username already used");
+                    ModelState.AddModelError("Email", "Email already used");
                     return View(registerVM);
                 }
-                else
+                if (usersService.UserExistsByUsername(registerVM.Username))
                 {
-                    int userID = usersService.InsertUser(registerVM);
-                    Session["CurrentUserID"] = userID;
-                    Session["CurrentUserName"] = registerVM.Username;
-                    Session["CurrentUserIsAdmin"] = false;
-
-                    return RedirectToAction("Index", "Home");
+                    ModelState.AddModelError("Username", "Username already used");
+                    return View(registerVM);
                 }
+
+                int userID = usersService.InsertUser(registerVM);
+                Session["CurrentUserID"] = userID;
+                Session["CurrentUserName"] = registerVM.Username;
+                Session["CurrentUserIsAdmin"] = false;
+
+                // login user
+                FormsAuthentication.SetAuthCookie(registerVM.Username, false);
+
+                return RedirectToAction("Index", "Home");
+
             }
             else
             {
@@ -85,11 +87,14 @@ namespace RecipeForSuccess_mvc.Controllers
                 UserVM userVM = usersService.GetUserByEmailAndPassword(loginVM.Email, loginVM.Password);
                 if (userVM.User_id != 0)
                 {
+                    // log user in
                     FormsAuthentication.SetAuthCookie(userVM.Username, false);
 
                     Session["CurrentUserID"] = userVM.User_id;
                     Session["CurrentUserName"] = userVM.Username;
                     Session["CurrentUserIsAdmin"] = userVM.Is_admin;
+
+
 
                     //if (userVM.is_admin)
                     //{
@@ -98,7 +103,7 @@ namespace RecipeForSuccess_mvc.Controllers
                     //else
                     //{
                     //    ViewBag.Error = "";
-                        return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Index", "Home");
                     //}
                 }
                 else
@@ -130,7 +135,7 @@ namespace RecipeForSuccess_mvc.Controllers
             int userID = Convert.ToInt32(Session["CurrentUserID"]);
 
             friendsService.NewFriendRequest(userID, friendId);
-          
+
         }
 
         [Authorize]
@@ -157,7 +162,7 @@ namespace RecipeForSuccess_mvc.Controllers
             int viewing_id = usersService.GetUserIDByUserName(username);
 
             string userType = "guest";
-            if (username.Equals(user) )
+            if (username.Equals(user))
             {
                 userType = "owner";
             }
@@ -165,9 +170,9 @@ namespace RecipeForSuccess_mvc.Controllers
             ViewBag.UserType = userType;
 
             // check if they are friends
-            if (userType=="guest")
+            if (userType == "guest")
             {
-                
+
                 string areFriends = friendsService.AreFriends(user_id, viewing_id);
 
                 switch (areFriends)
@@ -190,7 +195,7 @@ namespace RecipeForSuccess_mvc.Controllers
             int user_id = Convert.ToInt32(Session["CurrentUserID"]);
             EditUserPasswordVM editUserPasswordVM = new EditUserPasswordVM() { User_id = user_id, Password = "", Confirm_password = "" };
             return View(editUserPasswordVM);
-            
+
         }
 
         [HttpPost]
@@ -210,10 +215,10 @@ namespace RecipeForSuccess_mvc.Controllers
                 }
                 else
                 {
-                    ModelState.AddModelError("password", "Password cannot be a previously used password");
+                    ModelState.AddModelError("Password", "Password cannot be a previously used password");
                     return View();
                 }
-                
+
             }
             else
             {

@@ -6,74 +6,113 @@
 
 <h2>Add Recipe</h2>
 
-@using (Html.BeginForm()) 
+@using (Html.BeginForm("AddRecipe", "Recipes", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
     @Html.AntiForgeryToken()
-    
-<div class="form-horizontal">
+
+    <div class="card border-secondary mb-3" id="addRecipe" style="max-width:600px;">
+        <div class="card-header">Add Recipe Below</div>
+        <div class="card-body">
+
+            <div class="form-horizontal">
+
+                @Html.HiddenFor(model => model.recipe_id)
 
 
-    @Html.HiddenFor(model => model.recipe_id)
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-3" })
+                    <div class="col-md-9">
+                        @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                    </div>
+                </div>
 
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-3" })
+                    <div class="col-md-12">
+                        @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                    </div>
+                </div>
 
-    <div class="form-group">
-        @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-4">
-            @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
-            @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
-        </div>
-    </div>
+                <div class="form-group">
 
-    <div class="form-group">
-        @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-4">
-            @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control" } })
-            @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
-        </div>
-    </div>
+                    <label for="Meal_type_name" class="col-md-3">Meal Type</label>
+                    @*@Html.LabelFor(model => model.Meal_type_name, htmlAttributes: new { @class = "control-label col-md-2" })*@
+                    <div class="col-md-12">
+                        <select class="form-control" id="Meal_type_id" name="Meal_type_id">
+                            <option value="">Please Select</option>
+                            @foreach (var type in ViewBag.MealTypes)
+                            {
+                                <option value="@type.Meal_type_id">@type.Name</option>
+                            }
+                        </select>
+                        @*@Html.EditorFor(model => model.Meal_type_name, new { htmlAttributes = new { @class = "form-control" } })*@
+                        @Html.ValidationMessageFor(model => model.meal_type_id, "", new { @class = "text-danger" })
+                    </div>
+                </div>
 
-    <div class="form-group">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Ingredients, htmlAttributes: new { @class = "control-label col-md-3" })<small>Enter Ingredients, one per line</small>
 
-            <label for="Meal_type_name" class="col-md-2">Meal Type</label>
-            @*@Html.LabelFor(model => model.Meal_type_name, htmlAttributes: new { @class = "control-label col-md-2" })*@
-            <div class="col-md-4">
-                <select class="form-control" id="Meal_type_id" name="Meal_type_id">
-                    <option value="">Please Select</option>
-                    @foreach (var type in ViewBag.MealTypes)
-                    {
-                        <option value="@type.Meal_type_id">@type.Name</option>
-                    }
-                </select>
-                @*@Html.EditorFor(model => model.Meal_type_name, new { htmlAttributes = new { @class = "form-control" } })*@
-                @Html.ValidationMessageFor(model => model.meal_type_id, "", new { @class = "text-danger" })
+                    <div class="col-md-12">
+                        @Html.TextAreaFor(model => model.Ingredients, new { @class = "form-control", rows = "6", placeholder = "Enter Ingredients, one per line" })
+                        @Html.ValidationMessageFor(model => model.Ingredients, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Instructions, htmlAttributes: new { @class = "control-label col-md-3" })<small>Enter Instructions, one per line</small>
+                    <div class="col-md-12">
+                        @Html.TextAreaFor(model => model.Instructions, new { @class = "form-control", rows = "6", placeholder = "Enter Instructions, one per line" })
+                        @Html.ValidationMessageFor(model => model.Instructions, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-md-4" for="imageUpload">Upload Image</label>
+                    <div class="col-md-8">
+                        <input type="file" name="file" id="imageUpload" />
+                        <img id="imgPreview" src="#" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class=" col-md-8">
+                        <input type="submit" value="Post" class="btn btn-success" />
+                    </div>
+                </div>
             </div>
         </div>
-
-    <div class="form-group">
-        @Html.LabelFor(model => model.Ingredients, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-4">
-            @Html.TextAreaFor(model => model.Ingredients, new { @class = "form-control", rows="6", placeholder="Enter Ingredients, one per line" })
-            @Html.ValidationMessageFor(model => model.Ingredients, "", new { @class = "text-danger" })
-        </div>
     </div>
 
-    <div class="form-group">
-        @Html.LabelFor(model => model.Instructions, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-4">
-            @Html.TextAreaFor(model => model.Instructions, new { @class = "form-control", rows="6", placeholder = "Enter Instructions, one per line" })
-            @Html.ValidationMessageFor(model => model.Instructions, "", new { @class = "text-danger" })
-        </div>
-    </div>
-
- 
-    <div class="form-group">
-        <div class="col-md-offset-2 col-md-10">
-            <input type="submit" value="Create" class="btn btn-success" />
-        </div>
-    </div>
-</div>
 }
-
 <div>
     @Html.ActionLink("Back to List", "Index")
 </div>
+
+@section Scripts {
+    <script>
+
+        $(function () {
+
+            /* Preview Selected Image */
+            function readURL(input) {
+                if (input.files && input.files[0]) {
+                    var reader = new FileReader();
+
+                    reader.onload = function (e) {
+                        $("img#imgPreview").attr("src", e.target.result).width(200).height(200);
+                    }
+
+                    reader.readAsDataURL(input.files[0]);
+                }
+            }
+
+            $("#imageUpload").change(function () {
+                readURL(this);
+            });
+        });
+    </script>
+
+}

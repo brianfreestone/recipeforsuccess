@@ -9,7 +9,7 @@ namespace RecipeForSuccess_mvc.CustomFilters
         {
             if (filterContext.RequestContext.HttpContext.Session["CurrentUserIsAdmin"]==null)
             {
-                filterContext.Result = new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new {controller="Home", action="Index" }));
+                filterContext.Result = new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new {controller="Home", action="Index", area="" }));
             }
         }
     }

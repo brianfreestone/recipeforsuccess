@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using RecipeForSuccess.ViewModels;
 using RecipeForSuccess.ServiceLayer;
 using RecipeForSuccess_mvc.CustomFilters;
+using System.IO;
 
 namespace RecipeForSuccess_mvc.Controllers
 {
@@ -45,14 +46,50 @@ namespace RecipeForSuccess_mvc.Controllers
         }
 
         [HttpPost]
-        public ActionResult AddRecipe(RecipeVM recipeVM)
+        public ActionResult AddRecipe(RecipeVM recipeVM, HttpPostedFileBase file)
         {
             //int recipeID = 0;
             if (ModelState.IsValid)
             {
                 int user_id = Convert.ToInt32(Session["CurrentUserID"]);
                 recipeVM.User_id = user_id;
-                recipesService.InsertRecipe(recipeVM);
+
+               
+
+                // check if file was uploaded
+                if (file != null && file.ContentLength > 0)
+                {
+                    // get extension
+                    string ext = file.ContentType.ToLower();
+
+
+                    // verify extension
+                    if (ext != "image/jpg" &&
+                        ext != "image/jpeg" &&
+                        ext != "image/pjpeg" &&
+                        ext != "image/gif" &&
+                        ext != "image/x-png" &&
+                        ext != "image/png")
+                    {
+                        ModelState.AddModelError("", "The image was not uploaded - wong image extension");
+                        return View("AddRecipe", recipeVM);
+                    }
+
+                }
+
+                int recipeID =  recipesService.InsertRecipe(recipeVM, file);
+
+                // set upload directory
+                var uploadsDirectory = new DirectoryInfo(string.Format("{0}Uploads", Server.MapPath(@"\")));
+
+                // set image name
+                string imageName = recipeID + ".jpg";
+
+                // set path
+                var path = string.Format("{0}\\{1}", uploadsDirectory, imageName);
+
+                // save image
+                file.SaveAs(path);
 
                 TempData["Success"] = "Recipe Added";
             }
@@ -60,9 +97,15 @@ namespace RecipeForSuccess_mvc.Controllers
             {
                 ViewBag.RecipeInserted = false;
                 ModelState.AddModelError("key", "All Fields must be filled out");
+
+                List<MealTypeVM> mealTypeVMs = recipesService.GetMealTypes();
+
+                ViewBag.MealTypes = mealTypeVMs;
+
+                return View(recipeVM);
             }
 
-            return RedirectToAction("Index","Recipes");
+            return RedirectToAction("Index", "Recipes");
 
         }
 
@@ -98,7 +141,7 @@ namespace RecipeForSuccess_mvc.Controllers
         }
 
         [HttpPost]
-        public void UpdateFavorite(int recipeID, int userID, string favoriteType) 
+        public void UpdateFavorite(int recipeID, int userID, string favoriteType)
         {
             recipesService.UpdateFavorite(recipeID, userID, favoriteType);
         }
