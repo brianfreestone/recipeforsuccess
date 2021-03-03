@@ -1,5 +1,11 @@
 ﻿.login-form {
-    width: 600px;
+    max-width: 600px;
+    margin: auto;
+    padding-top: 50px;
+}
+
+.change-form {
+    max-width: 400px;
     margin: auto;
     padding-top: 50px;
 }
@@ -15,11 +21,12 @@
         margin: 0 0 15px;
     }
 
-.register-form {
-    width: 500px;
+/*.register-form {
+    max-width: 500px;
     margin: auto;
     padding-top: 10px;
-}
+    width: 100%;
+}*/
 
     .register-form form {
         margin-bottom: 15px;
@@ -46,13 +53,7 @@
     color: black;
 }
 
-.background {
-    background-image: url("../Images/updatedkitchen.jpg");
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
-    height: 100%;
-}
+
 
 .lead {
     color: black;
@@ -185,16 +186,16 @@ span.fa-heart-o {
     margin-right: 15px;
     /*width: 35px;*/
     display: inline;
-    padding: 5px;
+    padding: 3px;
     border:1px solid black;
     border-radius:2px;
 
 }
 
 .validator-fail{
-    background-color: firebrick;
-    color: white;
-    border-color: red;
+    background-color:  lightgrey;
+    color: darkslategray;
+    border-color: gray;
 }
 
 .validator-success {
@@ -203,10 +204,11 @@ span.fa-heart-o {
     border-color: green;
 }
 .validator-row {
+    text-align:center;
     margin-bottom:8px;
 }
 
-@media only screen and (min-width:320px) {
+@media only screen and (max-width:320px) {
 
 
     #recipePic {
@@ -222,10 +224,21 @@ span.fa-heart-o {
     .mealType {
         display: none;
     }
+
+    .background {
+        /*background-image: none;*/
+    
+    }
+    .register-form {
+   
+        margin: auto;
+        padding-top: 200px;
+        width: 100%;
+    }
  
 }
 
-@media only screen and (min-width:375px){
+@media only screen and (min-width:320px){
 
     #recipePic {
         width: 40px;
@@ -239,9 +252,16 @@ span.fa-heart-o {
     .mealType {
         display: none;
     }
+    .register-form {
+     
+        margin: auto;
+        padding-top: 200px;
+        width: 100%;
+    }
+
 }
 
-@media only screen and (min-width:480px) {
+@media only screen and (max-width:599) and (min-width:480px) {
 
     #recipePic {
         width: 60px;
@@ -258,16 +278,44 @@ span.fa-heart-o {
     .mealType {
         display: none;
     }
+
+    .register-form {
+        margin: auto;
+        padding-top: 200px;
+        width: 100%;
+    }
 }
 
 
-@media only screen and (min-width:600px) {
+@media only screen and (max-width:767) and (min-width:600px) {
 
     #recipePic {
         width: 70px;
     }
+
     .created, .description, .mealType {
         display: table-cell;
+    }
+
+    .register-form {
+        margin: auto;
+        padding-top: 200px;
+        width: 100%;
+    }
+}
+@media only screen and (min-width:768px) {
+
+    #recipePic {
+        width: 70px;
+    }
+
+    .created, .description, .mealType {
+        display: table-cell;
+    }
+    .register-form {
+        max-width: 600px;
+        margin: auto;
+        padding-top: 20px;
         
     }
 }

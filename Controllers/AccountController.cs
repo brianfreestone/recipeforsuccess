@@ -205,6 +205,13 @@ namespace RecipeForSuccess_mvc.Controllers
         {
             if (ModelState.IsValid)
             {
+                // check old password
+                if (!usersService.ExistingPasswordMatches(editUserPasswordVM.User_id, editUserPasswordVM.OldPassword)) 
+                {
+                    ModelState.AddModelError("Password", "Password does not match existing password");
+                    return View();
+                }
+
                 if (!usersService.PasswordExists(editUserPasswordVM.Password, editUserPasswordVM.User_id))
                 {
                     usersService.ChangeUserPassword(editUserPasswordVM);
