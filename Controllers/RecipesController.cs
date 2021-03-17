@@ -145,5 +145,7 @@ namespace RecipeForSuccess_mvc.Controllers
         {
             recipesService.UpdateFavorite(recipeID, userID, favoriteType);
         }
+
+       
     }
 }

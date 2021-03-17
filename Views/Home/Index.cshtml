@@ -17,8 +17,8 @@
 {
 
     <h2>Home</h2>
-    @*<div class="row">
-        <div class="col-6">
+    <div class="row">
+        @*<div class="col-6">
 
             <ul class="nav navbar-nav">
                 <li class="userLiveSearchLi">
@@ -26,7 +26,7 @@
                     <ul id="userLiveSearchUl"></ul>
                 </li>
             </ul>
-        </div>
+        </div>*@
         <div class="col-6">
 
             <ul class="nav navbar-nav">
@@ -36,7 +36,7 @@
                 </li>
             </ul>
         </div>
-    </div>*@
+    </div>
 }
 
 @section Scripts {
@@ -60,17 +60,17 @@
                     return false
                 }
 
-                var url = '/api/livesearchuser';
-                $.get(url, { searchVal: searchVal, userName: '@ViewBag.Username' }, function (data) {
+                var url = 'profile/LiveSearchUser';
+
+                $.post(url, { searchVal: searchVal, userName: '@ViewBag.Username' }, function (data) {
                     if (data.length > 0) {
                         $('ul#userLiveSearchUl').append("<li class=close>x</li>");
                     }
                     for (var i = 0; i < data.length; i++) {
                         var obj = data[i];
 
-                        $('ul#userLiveSearchUl').append('<li class=userLiveSearchLi><a href="/' + obj.username + '">' + obj.first_name + ' ' + obj.last_name + '</a></li>');
+                        $('ul#userLiveSearchUl').append('<li class=userLiveSearchLi><a href="/' + obj.Username + '">' + obj.First_name + ' ' + obj.Last_name + '</a></li>');
                     }
-
 
                 });
             });
@@ -149,7 +149,7 @@
                     for (var i = 0; i < data.length; i++) {
                         var obj = data[i];
 
-                        $('ul#friendRequestNotifUL').append('<li class=friendRequestNotificationLi><a href="/' + obj.username + '">' + obj.first_name + ' ' + obj.last_name + '</a> ' + '<a class=accept href="#" data-id="' + obj.user_id + '"><span><i class="fa fa-check"></i></span></a>' + ' ' + '<a class=decline href="#" data-id=' + obj.id + '"><span><i class="fa fa-window-close"></i></span></a></li>');
+                        $('ul#friendRequestNotifUL').append('<li class=friendRequestNotificationLi><a href="/' + obj.Username + '">' + obj.First_name + ' ' + obj.Last_name + '</a> ' + '<a class=accept href="#" data-id="' + obj.User_id + '"><span><i class="fa fa-check"></i></span></a>' + ' ' + '<a class=decline href="#" data-id=' + obj.User_id + '"><span><i class="fa fa-window-close"></i></span></a></li>');
                     }
 
                 });
@@ -172,8 +172,8 @@
 
                 var $this = $(this);
                 var friendId = $this.data("id");
-
-                var url = 'profile/AcceptFriendRequest';
+                console.log(friendId);
+                var url = "/profile/AcceptFriendRequest";
                 $.post(url, { friendId: friendId }, function (data) {
                 }).done(function () {
                     $this.parent().fadeOut("fast");

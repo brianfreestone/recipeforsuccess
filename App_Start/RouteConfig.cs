@@ -16,6 +16,9 @@ namespace RecipeForSuccess_mvc
             routes.MapRoute("ViewRecipes", "Recipes/Index", new { controller = "Recipes", action = "Index" });
 
             routes.MapRoute("ChangePassword", "Account/ChangePassword", new { controller = "Account", action = "ChangePassword" });
+            
+            //routes.MapRoute("AcceptFriend", "Profile/AcceptFriendRequest/{id}", new { controller = "Profile", action = "AcceptFriendRequest", id = UrlParameter.Optional });
+
 
             routes.MapRoute("Profile", "Profile/{action}/{id}", new { controller = "Profile", action = "Index", id=UrlParameter.Optional });
 
@@ -30,7 +33,7 @@ namespace RecipeForSuccess_mvc
             routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}",
-                defaults: new { controller = "Home", action = "Index"}
+                defaults: new { controller = "Home", action = "Index" }
             );
         }
     }

@@ -95,7 +95,7 @@ namespace RecipeForSuccess_mvc.Controllers
                     Session["CurrentUserIsAdmin"] = userVM.Is_admin;
 
 
-
+                    // redirect to admin, not used. We chose to show a gear instead
                     //if (userVM.is_admin)
                     //{
                     //    return RedirectToRoute(new { area = "Admin", controller = "AdminHome", action = "Index" });
@@ -146,8 +146,9 @@ namespace RecipeForSuccess_mvc.Controllers
             // get logged in users userid
             int user_id = Convert.ToInt32(Session["CurrentUserID"]);
 
-            string user = Session["CurrentUserName"].ToString();
-            string u = User.Identity.Name;
+            //string user = Session["CurrentUserName"].ToString();
+
+            string user = User.Identity.Name;
 
             // get logged in user's username
             ViewBag.UserName = username;
@@ -185,6 +186,15 @@ namespace RecipeForSuccess_mvc.Controllers
                         break;
                 }
             }
+
+
+            // get list of friends
+            List<UserVM> friends = friendsService.GetFriends(user_id);
+
+            ViewBag.Friends = friends;
+
+
+
             return View();
         }
 
@@ -206,7 +216,7 @@ namespace RecipeForSuccess_mvc.Controllers
             if (ModelState.IsValid)
             {
                 // check old password
-                if (!usersService.ExistingPasswordMatches(editUserPasswordVM.User_id, editUserPasswordVM.OldPassword)) 
+                if (!usersService.ExistingPasswordMatches(editUserPasswordVM.User_id, editUserPasswordVM.OldPassword))
                 {
                     ModelState.AddModelError("Password", "Password does not match existing password");
                     return View();

@@ -19,9 +19,9 @@ namespace RecipeForSuccess_mvc.APIControllers
         }
 
         
-        public IHttpActionResult Get(string searchVal, string userName)
+        public IHttpActionResult Post(string searchVal, string userName)
         {
-            List<UserVM> usernames = usersService.LiveSearchUsers(searchVal, userName);
+            List<UserVM> usernames = usersService.LiveSearchTenUsers(searchVal, userName);
 
             return Json(usernames);
         }

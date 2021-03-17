@@ -72,14 +72,17 @@ li.userLiveSearchLi, li.recipeLiveSearchLi {
     display: inline-block;
     padding: 10px;
     position: relative;
-
 }
+
+
+
 ul#userLiveSearchUl {
     position: absolute;
     background: #8a8484;
     right: -10px;
     top: 70px;
-    padding:0
+    padding:0;
+    z-index:1;
 }
 
 li.userLiveSearchLi li.close,
@@ -105,6 +108,7 @@ li.friendRequestNotificationLi a{
   
 
 }
+
 
 
 

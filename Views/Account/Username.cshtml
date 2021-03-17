@@ -4,47 +4,125 @@
 }
 
 @*<h2>@ViewBag.UserName</h2>*@
+<div class="container">
 
-<div class="row">
-    <div class="col-xs-12 col-md-6">
-        <p class="userImg">
+    <div class="row">
+        <div class="col-xs-12 col-md-6 col-lg-12">
+            <div class="user-layout">
+                <p class="userImg">
 
-        </p>
-        <h2>@ViewBag.ViewingFullName (@ViewBag.UserName)</h2>
-        @if (ViewBag.UserType == "guest")
-        {
-            <div class="friends">
-                @if (ViewBag.NotFriends == "Pending")
+                </p>
+                <div class="row">
+
+                    <div class="col-4"><h2>@ViewBag.ViewingFullName</h2></div>
+                    <div class="col-4"><h5 class="mt-2">(@ViewBag.UserName)</h5></div>
+                </div>
+            </div>
+            @if (ViewBag.UserType == "guest")
+            {
+                <div class="friends">
+                    @if (ViewBag.NotFriends == "Pending")
+                    {
+                        <div class="areFriendsDiv alert alert-secondary">
+                            <p>Pending Friend Request.</p>
+                        </div>
+                    }
+                    else if (ViewBag.NotFriends == "True")
+                    {
+                        <div class="areFriendsDiv alert alert-secondary">
+                            <a href="#" class="addFriend">Add Friend</a>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="areFriendsDiv alert alert-secondary">
+                            <span class="glyphicon glyphicon-thumbs-up"></span> friends
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+        <div class="col-6">
+
+        </div>
+    </div>
+
+    @if (ViewBag.UserType == "owner")
+    {
+        <div class="row">
+
+            <div class="col-md-6 col-lg-4">
+                <ul class="nav navbar-nav">
+                    <li class="userLiveSearchLi mainSearchLi">
+                        <input id="userSearchText" class="searchText form-control" type="text" placeholder="Search Friends" />
+                        <ul id="userLiveSearchUl"></ul>
+                    </li>
+                </ul>
+            </div>
+
+
+        </div>
+    }
+    <div class="row">
+        <div class="col-md-6">
+            <p class="lead">My Friends</p>
+            <div class="currentFriendsDiv @User.Identity.Name">
+                @if (ViewBag.Friends != null)
                 {
-                    <div class="areFriendsDiv alert alert-secondary">
-                        <p>Pending Friend Request.</p>
-                    </div>
-                }
-                else if (ViewBag.NotFriends == "True")
-                {
-                    <div class="areFriendsDiv alert alert-secondary">
-                        <a href="#" class="addFriend">Add Friend</a>
-                    </div>
-                }
-                else
-                {
-                    <div class="areFriendsDiv alert alert-secondary">
-                        <span class="glyphicon glyphicon-thumbs-up"></span> friends
-                    </div>
+                    foreach (var friend in ViewBag.Friends)
+                    {
+                        <div class="friendContainer">
+                            @friend.Username
+                        </div>
+                    }
                 }
             </div>
-        }
-    </div>
-    <div class="col-6">
-
+        </div>
     </div>
 </div>
+
 
 @section Scripts {
     <script src="~/Scripts/jquery.signalR-2.2.2.min.js"></script>
     <script src="/signalr/hubs"></script>
     <script>
         $(document).ready(function () {
+
+             /*
+             * Live Search Username
+             */
+
+            $('input#userSearchText').keyup(function () {
+
+                var searchVal = $('input#userSearchText').val();
+                $('ul#userLiveSearchUl').empty();
+
+                if (searchVal == "" || searchVal == " ") {
+                    return false
+                }
+
+                var url = 'profile/LiveSearchUser';
+
+                $.post(url, { searchVal: searchVal, userName: '@ViewBag.Username' }, function (data) {
+                    if (data.length > 0) {
+                        $('ul#userLiveSearchUl').append("<li class=close>x</li>");
+                        for (var i = 0; i < data.length; i++) {
+                            var obj = data[i];
+
+                            $('ul#userLiveSearchUl').append('<li class="userLiveSearchLi" ><i class="fa fa-search mr-2"></i><a class=searchLi data-id="' + obj.User_id +  '" href="/' + obj.Username + '">' + obj.First_name + ' ' + obj.Last_name + '</a></li>');
+                        }
+                        $('ul#userLiveSearchUl').append('<li class="userLiveSearchLi" data-id="' + obj.User_id + '"><i class="fa fa-search mr-2"></i><a  href="/' + obj.Username + '"> Search for ' + searchVal + '</a></li>');
+                    } else {
+                        $('ul#userLiveSearchUl').append('<li class="userLiveSearchLi" data-id="' + obj.User_id + '"><i class="fa fa-search mr-2"></i><a  href="#"> Search for ' + searchVal + '</a></li>');
+                    }
+                });
+            });
+
+            // friends search click close
+            $("body").on('click', 'ul#userLiveSearchUl li.close', function () {
+                $('ul#userLiveSearchUl').empty();
+                $('input#userSearchText').val('');
+            });
 
            /*
              Hub
@@ -81,7 +159,7 @@
                     });
                 });
 
-            
+
 
         });
 

@@ -25,7 +25,6 @@ namespace RecipeForSuccess_mvc.Controllers
             return View();
         }
 
-
         [HttpPost]
         [UserAuthorizationFilterAttribute]
         public void AddFriend(string friend)
@@ -46,10 +45,20 @@ namespace RecipeForSuccess_mvc.Controllers
         }
 
         [HttpPost]
+        [UserAuthorizationFilterAttribute]
         public void AcceptFriendRequest(int friendId)
         {
             int userID = Convert.ToInt32(Session["CurrentUserID"]);
             friendsService.AcceptFriendRequest(friendId,  userID);
+        }
+
+        [HttpPost]
+        public JsonResult LiveSearchUser(string searchVal, string userName)
+        { 
+        List<UserVM> usernames = usersService.LiveSearchTenUsers(searchVal, userName);
+
+
+            return Json(usernames);
         }
     }
 }
