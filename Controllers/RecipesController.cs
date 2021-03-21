@@ -13,17 +13,31 @@ namespace RecipeForSuccess_mvc.Controllers
     public class RecipesController : Controller
     {
         IRecipesService recipesService;
+        IFriendsService friendsService;
+        IUsersService usersService;
 
-        public RecipesController(IRecipesService recipesService)
+        public RecipesController(IRecipesService recipesService, IFriendsService friendsService,IUsersService usersService)
         {
             this.recipesService = recipesService;
+            this.friendsService = friendsService;
+            this.usersService = usersService;
         }
 
         // GET: Recipes
         [UserAuthorizationFilterAttribute]
         public ActionResult Index()
         {
-            int user_id = Convert.ToInt32(Session["CurrentUserID"]);
+            string userName = User.Identity.Name;
+            ViewBag.Username = userName;
+            
+            int user_id = usersService.GetUserIDByUserName(userName);
+
+            // get friend request count
+            var friendRequestCount = friendsService.GetFriendRequestCount(user_id);
+            if (friendRequestCount > 0)
+            {
+                ViewBag.FriendRequestCount = friendRequestCount;
+            }
 
             List<RecipeVM> recipeVMs = recipesService.GetRecipesByUserID(user_id);
 

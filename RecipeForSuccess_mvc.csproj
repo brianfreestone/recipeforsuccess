@@ -216,6 +216,7 @@
     <Content Include="Content\site.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\fontawesome-webfont.svg" />
+    <Content Include="FriendService.asmx" />
     <Content Include="Global.asax" />
     <Content Include="Images\avatar.png" />
     <Content Include="Images\down-color.png" />
@@ -403,6 +404,10 @@
     <Compile Include="CustomFilters\AdminAuthorizationFilter.cs" />
     <Compile Include="CustomFilters\UserAuthorizationFilter.cs" />
     <Compile Include="EchoHub.cs" />
+    <Compile Include="FriendService.asmx.cs">
+      <DependentUpon>FriendService.asmx</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -495,7 +500,9 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>49476</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:49476/</IISUrl>
+          <IISUrl>http://localhost:49477/</IISUrl>
+          <OverrideIISAppRootUrl>True</OverrideIISAppRootUrl>
+          <IISAppRootUrl>http://localhost:49477/</IISAppRootUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

@@ -9,7 +9,7 @@
     <h2>My Recipes</h2>
 
     <p>
-        @Html.ActionLink("Create New", "AddRecipe", new object { }, new {@class="btn btn-primary"})
+        @Html.ActionLink("Create New", "AddRecipe", new object { }, new { @class = "btn btn-primary" })
     </p>
     <table class="table table-responsive-sm">
         <tr>
@@ -78,9 +78,13 @@
 </div>
 
 @section Scripts {
+    <script src="~/Scripts/jquery.signalR-2.2.2.min.js"></script>
+    <script src="/signalr/hubs"></script>
     <script>
 
         $(document).ready(function () {
+
+
 
             $("body").on("click", "a.favorite", function (e) {
                 e.preventDefault();
@@ -122,6 +126,165 @@
                     }
                 });
             });
+
+             /*
+            * Display friend requests
+            */
+
+            $("body").on("click", "span.friendRequestNotification.green", function () {
+
+                window.location.href = "/" + '@ViewBag.Username';
+
+                //$('ul#friendRequestNotifUL').empty();
+
+
+                //var url = '/profile/DisplayFriendRequests';
+                //$.post(url, {}, function (data) {
+                //    if (data.length > 0) {
+                //        $('ul#friendRequestNotifUL').append("<li class=close>x</li>");
+                //    }
+                //    for (var i = 0; i < data.length; i++) {
+                //        var obj = data[i];
+
+                //        $('ul#friendRequestNotifUL').append('<li class=friendRequestNotificationLi><a href="/' + obj.Username + '">' + obj.First_name + ' ' + obj.Last_name + '</a> ' + '<a class=accept href="#" data-id="' + obj.User_id + '"><span><i class="fa fa-check"></i></span></a>' + ' ' + '<a class=decline href="#" data-id=' + obj.User_id + '"><span><i class="fa fa-window-close"></i></span></a></li>');
+                //    }
+
+                //});
+            });
+
+            // Setup Hub Connection
+            var hub = $.connection.echo;
+
+            hub.client.test = function (msg) {
+                console.log(msg);
+            }
+
+            hub.client.friendRequestNotify = function (friend, requestCount) {
+
+                $("span.friendRequestNotification." + friend + "> span").text(requestCount);
+                $("span.friendRequestNotification." + friend).addClass("green");
+            }
+
+            hub.client.friendRequestCount = function (username, count) {
+                if (count > 0) {
+                    $("span.friendRequestNotification." + username + "> span").text(count);
+                }
+                else {
+                    $("span.friendRequestNotification." + username + "> span").text("");
+                    $("span.friendRequestNotification." + username).removeClass("green");
+
+                }
+            }
+
+            // connect to the hub
+            $.connection.hub
+            .start()
+            .done(function () {
+
+                hub.server.hello("SignalR works from Username");
+
+                /*
+                 * Add Friend From their page
+                 */
+
+
+                $('a.addFriendFromPage').click(function (e) {
+                    e.preventDefault();
+
+                    var friend = '@ViewBag.ViewingUserName'
+
+                    var url = '/profile/AddFriend';
+
+                    $.post(url, { friend: friend }, function (data) {
+                        //$('.areFriendsDiv').removeClass('alert-info').addClass('alert-warning').html('<p>Pending Friend Request</p>');
+                    }).done(function () {
+                        hub.server.notify(friend);
+                        window.location.href = "/" + friend;
+                    });
+                });
+
+
+                /*
+                    * Add Friend
+                    */
+                $('a.addFriend').click(function (e) {
+                    e.preventDefault();
+
+                    var $this = $(this);
+                    var userName = $this.data("id");
+
+                    var friend = '@ViewBag.UserName';
+
+                    console.log('friend: ' + friend);
+                    console.log('userName: ' + userName);
+
+                    var url = '/profile/AddFriend';
+
+                    $.post(url, { friend: userName }, function (data) {
+                        //$('.areFriendsDiv').removeClass('alert-info').addClass('alert-warning').html('<p>Pending Friend Request</p>');
+                    }).done(function () {
+                        hub.server.notify(friend);
+                        window.location.href = "/" + friend;
+                    });
+                });
+
+                ///////////////////////////////////////////////
+                /*
+                * Accept friend requests
+                */
+
+                $("body").on("click", "a.btnAccept", function (e) {
+                    e.preventDefault();
+
+                    var $this = $(this);
+                    var friendId = $this.data("id");
+                    var trRow = $this.data("row");
+
+                    var friend = '@ViewBag.UserName';
+                    console.log('rownum: ' + trRow);
+                    var url = "/profile/AcceptFriendRequest";
+                    $.post(url, { friendId: friendId }, function (data) {
+                    }).done(function () {
+                        //$this.parent().fadeOut("fast");
+                        hub.server.getFriendRequestCount(@ViewBag.UserID);
+
+                        //hub.server.getFriendCount(friendId);
+                        window.location.href = "/" + friend;
+                        $this.parent().parent().remove();
+                        //loadFriends(currentPageNumber);
+                    });
+                });
+
+                ///////////////////////////////////////////////
+                /*
+                * Decline friend requests
+                */
+
+                $("body").on("click", "a.btnDecline", function (e) {
+                    e.preventDefault();
+
+                    var $this = $(this);
+                    var friendId = $this.data("id");
+                    var trRow = $this.data("row");
+
+                    var friend = '@ViewBag.UserName';
+                    console.log('rownum: ' + trRow);
+                    var url = "/profile/DeclineFriendRequest";
+                    $.post(url, { friendId: friendId }, function (data) {
+                    }).done(function () {
+                        //$this.parent().fadeOut("fast");
+                        hub.server.getFriendRequestCount(@ViewBag.UserID);
+
+                        //hub.server.getFriendCount(friendId);
+                        window.location.href = "/" + friend;
+                        //$this.parent().parent().remove();
+                        //loadFriends(currentPageNumber);
+                    });
+                });
+
+            });
+
+
         });
 
 

@@ -29,16 +29,20 @@ namespace RecipeForSuccess_mvc.Controllers
         [UserAuthorizationFilterAttribute]
         public void AddFriend(string friend)
         {
-            int id1 = Convert.ToInt32(Session["CurrentUserID"]);
+            string loggedInUser = User.Identity.Name;
+            // get logged in user's user_id
+            int id1 = usersService.GetUserIDByUserName(loggedInUser);
+         
             int id2 = usersService.GetUserIDByUserName(friend);
             friendsService.NewFriendRequest(id1, id2);
         }
 
         [HttpPost]
         public JsonResult DisplayFriendRequests()
-        { 
+        {
+            string loggedInUser = User.Identity.Name;
             // get userID
-            int userID = Convert.ToInt32(Session["CurrentUserID"]);
+            int userID = usersService.GetUserIDByUserName(loggedInUser);
             List<UserVM> listRequests = friendsService.GetFriendRequestsByUserID(userID);
 
             return Json(listRequests);
@@ -48,8 +52,30 @@ namespace RecipeForSuccess_mvc.Controllers
         [UserAuthorizationFilterAttribute]
         public void AcceptFriendRequest(int friendId)
         {
-            int userID = Convert.ToInt32(Session["CurrentUserID"]);
+            string loggedInUser = User.Identity.Name;
+            // get userID
+            int userID = usersService.GetUserIDByUserName(loggedInUser);
             friendsService.AcceptFriendRequest(friendId,  userID);
+        }
+
+        [HttpPost]
+        [UserAuthorizationFilter]
+        public void DeclineFriendRequest(int friendId)
+        {
+            string loggedInUser = User.Identity.Name;
+            // get userID
+            int userID = usersService.GetUserIDByUserName(loggedInUser);
+            bool declined = friendsService.DeclineFriendRequest(friendId, userID);
+            
+            // create notification 
+            if (declined)
+            {
+                TempData["Success"] = "Request Declined";
+            }
+            else
+            {
+                TempData["Error"] = "Request Declined";
+            }
         }
 
         [HttpPost]

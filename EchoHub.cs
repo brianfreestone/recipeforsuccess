@@ -5,6 +5,7 @@ using System.Web;
 using Microsoft.AspNet.SignalR;
 using Microsoft.AspNet.SignalR.Hubs;
 using RecipeForSuccess.ServiceLayer;
+using System.Diagnostics;
 
 
 namespace RecipeForSuccess_mvc
@@ -17,11 +18,13 @@ namespace RecipeForSuccess_mvc
         
         public void Hello(string message)
         {
+            Trace.WriteLine(message);
+
             // set clients
             var allClients = Clients.All;
 
             // call js function
-            allClients.test("this is a test");
+            allClients.test("this is a test, signalR connected");
         }
 
         public void Notify(string friend)

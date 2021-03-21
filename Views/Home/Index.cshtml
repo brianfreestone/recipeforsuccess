@@ -18,15 +18,15 @@
 
     <h2>Home</h2>
     <div class="row">
-        @*<div class="col-6">
+        <div class="col-6">
 
-            <ul class="nav navbar-nav">
-                <li class="userLiveSearchLi">
-                    <input id="userSearchText" class="searchText form-control" type="text" placeholder="Search Friends" />
-                    <ul id="userLiveSearchUl"></ul>
-                </li>
-            </ul>
-        </div>*@
+                <ul class="nav navbar-nav">
+                    <li class="userLiveSearchLi">
+                        <input id="userSearchText" class="searchText form-control" type="text" placeholder="Search Friends" />
+                        <ul id="userLiveSearchUl"></ul>
+                    </li>
+                </ul>
+            </div>
         <div class="col-6">
 
             <ul class="nav navbar-nav">
@@ -37,6 +37,23 @@
             </ul>
         </div>
     </div>
+
+    <div class="row">
+
+        <div class="feed">
+
+            <table id="tblFeed">
+                <thead>
+                    <tr>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+
+        </div>
+
+    </div>
 }
 
 @section Scripts {
@@ -46,6 +63,46 @@
     <script>
 
         $(document).ready(function () {
+
+           /*
+           * Load Feed
+           */
+
+            var currentPageNumber = 1;
+            loadFeed(currentPageNumber);
+
+            function loadFeed(currentPage) {
+
+                var userID = '@ViewBag.UserID';
+
+                $.ajax({
+                    url: 'FriendService.asmx/GetRecipes',
+                    method: 'post',
+                    data: { pageNumber: currentPage, pageSize: 10, userID: userID },
+                    dataType: 'json',
+                    success: function (data) {
+                        var feedTable = $('#tblFeed tbody');
+
+                        $(data).each(function (index, post) {
+
+                            //var counter = 0;
+
+                            console.log(post.User_id);
+                            var tr = '<tr class=divFriendContainer><td><a href="/' + post.Username + '" class=clickViewFriend data-id="' + post.User_id + '">' + post.UserFullName + '</a></td><td>';
+                       
+                            tr = tr + '<td>' + post.RecipeName + ' ' + post.Description + ' ' + post.Created + '</td></tr >';
+                       
+                               
+                   
+
+                            //counter++;
+
+                            feedTable.append(tr);
+
+                        });
+                    }
+                });
+            }
 
             /*
              * Live Search Username
@@ -81,6 +138,37 @@
                 $('input#userSearchText').val('');
             });
 
+            /*
+            * Display friend requests
+            */
+
+            $("body").on("click", "span.friendRequestNotification.green", function () {
+
+                window.location.href = "/" + '@ViewBag.Username';
+
+                //$('ul#friendRequestNotifUL').empty();
+
+
+                //var url = '/profile/DisplayFriendRequests';
+                //$.post(url, {}, function (data) {
+                //    if (data.length > 0) {
+                //        $('ul#friendRequestNotifUL').append("<li class=close>x</li>");
+                //    }
+                //    for (var i = 0; i < data.length; i++) {
+                //        var obj = data[i];
+
+                //        $('ul#friendRequestNotifUL').append('<li class=friendRequestNotificationLi><a href="/' + obj.Username + '">' + obj.First_name + ' ' + obj.Last_name + '</a> ' + '<a class=accept href="#" data-id="' + obj.User_id + '"><span><i class="fa fa-check"></i></span></a>' + ' ' + '<a class=decline href="#" data-id=' + obj.User_id + '"><span><i class="fa fa-window-close"></i></span></a></li>');
+                //    }
+
+                //});
+            });
+
+            // friends search click close
+            $("body").on('click', 'ul#friendRequestNotifUL li.close', function () {
+                $('ul#friendRequestNotifUL').empty();
+            });
+
+
 
             /*
              Hub
@@ -111,78 +199,51 @@
 
             // connect to the hub
             $.connection.hub
-                .start()
-                .done(function () {
-                    hub.server.hello("Signal works");
+            .start()
+            .done(function () {
+                hub.server.hello("SignalR works from Index");
 
-                    /*
-                     * Add Friend
-                     */
-                    $('a.addFriend').click(function (e) {
-                        e.preventDefault();
 
-                        var friendID = '@ViewBag.UserId'
+                /*
+                    * Add Friend
+                    */
+                $('a.addFriend').click(function (e) {
+                    e.preventDefault();
 
-                        var url = '/account/AddFriend';
+                    var friendID = '@ViewBag.UserId'
 
-                        $.post(url, { friend: friend }, function (data) {
-                            $('.areFriendsDiv').removeClass('alert-info').addClass('alert-warning').html('<p>Pending Friend Request</p>');
-                        }).done(function () {
-                            hub.server.notify(friend);
-                        });
+                    var url = '/account/AddFriend';
+
+                    $.post(url, { friend: friend }, function (data) {
+                        $('.areFriendsDiv').removeClass('badge-info').addClass('badge-warning').html('<p>Pending Friend Request</p>');
+                    }).done(function () {
+                        hub.server.notify(friend);
                     });
                 });
-            /*
-             * Display friend requests
-             */
-
-            $("body").on("click", "span.friendRequestNotification.green", function () {
-
-                $('ul#friendRequestNotifUL').empty();
 
 
-                var url = '/profile/DisplayFriendRequests';
-                $.post(url, {}, function (data) {
-                    if (data.length > 0) {
-                        $('ul#friendRequestNotifUL').append("<li class=close>x</li>");
-                    }
-                    for (var i = 0; i < data.length; i++) {
-                        var obj = data[i];
+                ///////////////////////////////////////////////
+                /*
+                * Accept friend requests
+                */
 
-                        $('ul#friendRequestNotifUL').append('<li class=friendRequestNotificationLi><a href="/' + obj.Username + '">' + obj.First_name + ' ' + obj.Last_name + '</a> ' + '<a class=accept href="#" data-id="' + obj.User_id + '"><span><i class="fa fa-check"></i></span></a>' + ' ' + '<a class=decline href="#" data-id=' + obj.User_id + '"><span><i class="fa fa-window-close"></i></span></a></li>');
-                    }
+                $("body").on("click", "a.accept", function (e) {
+                    e.preventDefault();
 
+                    var $this = $(this);
+                    var friendId = $this.data("id");
+                    console.log(friendId);
+                    var url = "/profile/AcceptFriendRequest";
+                    $.post(url, { friendId: friendId }, function (data) {
+                    }).done(function () {
+                        $this.parent().fadeOut("fast");
+                        hub.server.getFriendRequestCount(@Session["CurrentUserID"]);
+                        //hub.server.getFriendCount(friendId);
+
+                    });
                 });
+
             });
-
-            // friends search click close
-            $("body").on('click', 'ul#friendRequestNotifUL li.close', function () {
-                $('ul#friendRequestNotifUL').empty();
-            });
-
-
-
-            ///////////////////////////////////////////////
-            /*
-           * Accept friend requests
-           */
-
-            $("body").on("click", "a.accept", function (e) {
-                e.preventDefault();
-
-                var $this = $(this);
-                var friendId = $this.data("id");
-                console.log(friendId);
-                var url = "/profile/AcceptFriendRequest";
-                $.post(url, { friendId: friendId }, function (data) {
-                }).done(function () {
-                    $this.parent().fadeOut("fast");
-                    hub.server.getFriendRequestCount(@Session["CurrentUserID"]);
-                   //hub.server.getFriendCount(friendId);
-
-                });
-            });
-
 
             ///////////////////////////////////////////////
 

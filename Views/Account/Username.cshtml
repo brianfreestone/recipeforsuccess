@@ -7,15 +7,15 @@
 <div class="container">
 
     <div class="row">
-        <div class="col-xs-12 col-md-6 col-lg-12">
+        <div class="col-xs-12 col-md-6 col-lg-5">
             <div class="user-layout">
                 <p class="userImg">
 
                 </p>
                 <div class="row">
 
-                    <div class="col-4"><h2>@ViewBag.ViewingFullName</h2></div>
-                    <div class="col-4"><h5 class="mt-2">(@ViewBag.UserName)</h5></div>
+                    <div class="col-4"><h3>@ViewBag.ViewingFullName</h3></div>
+                    <div class="col-3"><h5 class="mt-2">(@ViewBag.ViewingUserName)</h5></div>
                 </div>
             </div>
             @if (ViewBag.UserType == "guest")
@@ -23,20 +23,20 @@
                 <div class="friends">
                     @if (ViewBag.NotFriends == "Pending")
                     {
-                        <div class="areFriendsDiv alert alert-secondary">
-                            <p>Pending Friend Request.</p>
-                        </div>
+                        <span class="areFriendsDiv badge badge-warning">
+                           Pending Friend Request.
+                        </span>
                     }
                     else if (ViewBag.NotFriends == "True")
                     {
-                        <div class="areFriendsDiv alert alert-secondary">
-                            <a href="#" class="addFriend">Add Friend</a>
-                        </div>
+                        //<span class="areFriendsDiv badge badge-primary">
+                            <a href="#" class="addFriendFromPage areFriendsDiv badge badge-primary">Add Friend</a>
+                        //</span>
                     }
                     else
                     {
-                        <div class="areFriendsDiv alert alert-secondary">
-                            <span class="glyphicon glyphicon-thumbs-up"></span> friends
+                        <div class="areFriendsDiv alert alert-primary">
+                            <span class="fa fa-user-friends "></span>You are friends with @ViewBag.ViewingFullName
                         </div>
                     }
                 </div>
@@ -47,14 +47,13 @@
         </div>
     </div>
 
-    @if (ViewBag.UserType == "owner")
-    {
+   
         <div class="row">
 
             <div class="col-md-6 col-lg-4">
                 <ul class="nav navbar-nav">
                     <li class="userLiveSearchLi mainSearchLi">
-                        <input id="userSearchText" class="searchText form-control" type="text" placeholder="Search Friends" />
+                        <input id="userSearchText" class="searchText form-control" type="text" placeholder="Search" />
                         <ul id="userLiveSearchUl"></ul>
                     </li>
                 </ul>
@@ -62,23 +61,110 @@
 
 
         </div>
-    }
-    <div class="row">
-        <div class="col-md-6">
-            <p class="lead">My Friends</p>
-            <div class="currentFriendsDiv @User.Identity.Name">
-                @if (ViewBag.Friends != null)
-                {
-                    foreach (var friend in ViewBag.Friends)
+  
+        <div class="row">
+            <div class="col-md-4 mt-3 mr-3 card">
+                <div class="card-body">
+                    <h5 class="card-title">Friends</h5>
+
+                    <div class="myFriends ml-4">
+                        @ViewBag.FriendCount
+
+                        @if (ViewBag.FriendCount == 0 || ViewBag.FriendCount > 1)
+                        {
+                            <span>Friends</span>
+                        }
+                        else
+                        {
+                            <span>Friend</span>
+                        }
+
+                    </div>
+
+                    @if (ViewBag.FriendCount > 0)
                     {
-                        <div class="friendContainer">
-                            @friend.Username
+                        <div class="divCurrentFriends mt-2 @User.Identity.Name">
+                            <table id="tblFriends">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
                         </div>
                     }
-                }
+
+                    @*<div class="divFriendContainer clearfix">
+                    <div class="divFriendName">
+                        <a href="#" class="clickAddFriend" data-id="@friend.User_id">@friend.First_name @friend.Last_name</a>
+                    </div>
+                    <div class="divFriendButton">
+                        @if (ViewBag.UserType == "guest")
+                        {
+                            <a href="#" class="btnAddNewFriend" data-id="@friend.User_id">Add Friend</a>
+                        }
+                    </div>
+                </div>*@
+
+
+                </div>
+
             </div>
-        </div>
-    </div>
+            @if (ViewBag.UserType == "owner")
+            {
+                <div class="col-md-4 ml-3 mt-3 card">
+                    <div class="card-body">
+                        <h5 class="card-title">Friend Requests</h5>
+                        @if (ViewBag.UserType == "owner")
+                        {
+                            <div class="myFriends ml-4">
+                                @if (ViewBag.FriendRequestCount > 0)
+                                {
+                                    <span>
+                                        @ViewBag.FriendRequestCount Friend Requests
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span>
+                                        0 Friend Requests
+                                    </span>
+                                }
+                            </div>
+
+                            if (ViewBag.FriendRequestCount > 0)
+                            {
+                                <div class="divRequests mt-2">
+
+                                    <table id="tblRequests">
+                                        @foreach (var request in ViewBag.ListRequests)
+                                        {
+                                            int counter = 0;
+                                            <tr class=divFriendContainer>
+                                                <td>
+                                                    <a href="/@request.Username" class="clickViewFriend">@request.First_name @request.Last_name</a>
+                                                </td>
+                                                <td>
+                                                    <a href="#" class="btnAccept acceptRequest" data-row=@counter data-id="@request.User_id">Accept</a>
+                                                </td>
+                                                <td>
+                                                    <a href="#" class="btnDecline declineRequest" data-row=@counter data-id="@request.User_id">Decline</a>
+                                                </td>
+                                            </tr>
+
+                                            counter++;
+                                        }
+                                    </table>
+                                </div>
+                            }
+                        }
+
+                    </div>
+                </div>
+            }
+            </div>
 </div>
 
 
@@ -87,6 +173,51 @@
     <script src="/signalr/hubs"></script>
     <script>
         $(document).ready(function () {
+
+      
+            /*
+           * Load Friends
+           */
+
+            var currentPageNumber = 1;
+            loadFriends(currentPageNumber);
+
+            function loadFriends(currentPage) {
+
+                var userID = @ViewBag.UserID;
+                var viewingID = @ViewBag.ViewingID;
+
+                $.ajax({
+                    url: 'FriendService.asmx/GetFriends',
+                    method: 'post',
+                    data: { pageNumber: currentPage, pageSize: 10, viewingID: viewingID, userID: userID },
+                    dataType: 'json',
+                    success: function (data) {
+                        var friendTable = $('#tblFriends tbody');
+
+                        $(data).each(function (index, friend) {
+
+                            //var counter = 0;
+
+                            console.log(friend.User_id);
+                            var tr = '<tr class=divFriendContainer><td><a href="/' + friend.Username + '" class=clickAddFriend data-id="' + friend.User_id + '">' + friend.First_name + ' ' + friend.Last_name + '</a></td><td>';
+                            if (friend.ShowAddFriend == true) {
+                                tr = tr + '<td><a href="#" class="btnAddNewFriend addFriend" data-id="' + friend.Username + '">Add Friend</a></td></tr >';
+                            } else if (friend.Pending == true) {
+                                tr = tr + '<td><a href="#" class="btnPendingFriend">Pending</a></td></tr >';
+                            } else {
+                                tr = tr + '<td></td>';
+                            }
+
+                            //counter++;
+
+                            friendTable.append(tr);
+
+                        });
+                    }
+                });
+            }
+
 
              /*
              * Live Search Username
@@ -109,11 +240,11 @@
                         for (var i = 0; i < data.length; i++) {
                             var obj = data[i];
 
-                            $('ul#userLiveSearchUl').append('<li class="userLiveSearchLi" ><i class="fa fa-search mr-2"></i><a class=searchLi data-id="' + obj.User_id +  '" href="/' + obj.Username + '">' + obj.First_name + ' ' + obj.Last_name + '</a></li>');
+                            $('ul#userLiveSearchUl').append('<li class="userLiveSearchLi" ><i class="fa fa-search mr-2"></i><a class=searchLi data-id="' + obj.Username +  '" href="/' + obj.Username + '">' + obj.First_name + ' ' + obj.Last_name + '</a></li>');
                         }
-                        $('ul#userLiveSearchUl').append('<li class="userLiveSearchLi" data-id="' + obj.User_id + '"><i class="fa fa-search mr-2"></i><a  href="/' + obj.Username + '"> Search for ' + searchVal + '</a></li>');
+                        $('ul#userLiveSearchUl').append('<li class="userLiveSearchLi" "><i class="fa fa-search mr-2"></i><a href="/' + obj.Username + '"> Search for ' + searchVal + '</a></li>');
                     } else {
-                        $('ul#userLiveSearchUl').append('<li class="userLiveSearchLi" data-id="' + obj.User_id + '"><i class="fa fa-search mr-2"></i><a  href="#"> Search for ' + searchVal + '</a></li>');
+                        $('ul#userLiveSearchUl').append('<li class=userLiveSearchLi><i class="fa fa-search mr-2"></i><a class=globalSearch href="#"> Search for ' + searchVal + '</a></li>');
                     }
                 });
             });
@@ -123,6 +254,35 @@
                 $('ul#userLiveSearchUl').empty();
                 $('input#userSearchText').val('');
             });
+
+
+
+            /*
+            * Display friend requests
+            */
+
+            $("body").on("click", "span.friendRequestNotification.green", function () {
+
+                window.location.href = "/" + '@ViewBag.Username';
+
+                //$('ul#friendRequestNotifUL').empty();
+
+
+                //var url = '/profile/DisplayFriendRequests';
+                //$.post(url, {}, function (data) {
+                //    if (data.length > 0) {
+                //        $('ul#friendRequestNotifUL').append("<li class=close>x</li>");
+                //    }
+                //    for (var i = 0; i < data.length; i++) {
+                //        var obj = data[i];
+
+                //        $('ul#friendRequestNotifUL').append('<li class=friendRequestNotificationLi><a href="/' + obj.Username + '">' + obj.First_name + ' ' + obj.Last_name + '</a> ' + '<a class=accept href="#" data-id="' + obj.User_id + '"><span><i class="fa fa-check"></i></span></a>' + ' ' + '<a class=decline href="#" data-id=' + obj.User_id + '"><span><i class="fa fa-window-close"></i></span></a></li>');
+                //    }
+
+                //});
+            });
+
+
 
            /*
              Hub
@@ -135,29 +295,132 @@
                 console.log(msg);
             }
 
+            hub.client.friendRequestNotify = function (friend, requestCount) {
+
+
+
+                $("span.friendRequestNotification." + friend + "> span").text(requestCount);
+                $("span.friendRequestNotification." + friend).addClass("green");
+            }
+
+            hub.client.friendRequestCount = function (username, count) {
+                if (count > 0) {
+                    $("span.friendRequestNotification." + username + "> span").text(count);
+                }
+                else {
+                    $("span.friendRequestNotification." + username + "> span").text("");
+                    $("span.friendRequestNotification." + username).removeClass("green");
+
+                }
+            }
+
             // connect to the hub
             $.connection.hub
-                .start()
-                .done(function () {
-                    hub.server.hello("Signal works");
+            .start()
+            .done(function () {
 
-                    /*
-                     * Add Friend
-                     */
-                    $('a.addFriend').click(function (e) {
-                        e.preventDefault();
+                hub.server.hello("SignalR works from Username");
 
-                        var friend = '@ViewBag.UserName'
+                /*
+                 * Add Friend From their page
+                 */
 
-                        var url = '/profile/AddFriend';
 
-                        $.post(url, { friend: friend }, function (data) {
-                            $('.areFriendsDiv').removeClass('alert-info').addClass('alert-warning').html('<p>Pending Friend Request</p>');
-                        }).done(function () {
-                            hub.server.notify(friend);
-                        });
+                $('a.addFriendFromPage').click(function (e) {
+                    e.preventDefault();
+
+                    var friend = '@ViewBag.ViewingUserName'
+
+                    var url = '/profile/AddFriend';
+
+                    $.post(url, { friend: friend }, function (data) {
+                        //$('.areFriendsDiv').removeClass('alert-info').addClass('alert-warning').html('<p>Pending Friend Request</p>');
+                    }).done(function () {
+                        hub.server.notify(friend);
+                        window.location.href = "/" + friend;
                     });
                 });
+
+
+                /*
+                    * Add Friend
+                    */
+                $('a.addFriend').click(function (e) {
+                    e.preventDefault();
+
+                    var $this = $(this);
+                    var userName = $this.data("id");
+
+                    var friend = '@ViewBag.UserName';
+
+                    console.log('friend: ' + friend);
+                    console.log('userName: ' + userName);
+
+                    var url = '/profile/AddFriend';
+
+                    $.post(url, { friend: userName }, function (data) {
+                        //$('.areFriendsDiv').removeClass('alert-info').addClass('alert-warning').html('<p>Pending Friend Request</p>');
+                    }).done(function () {
+                        hub.server.notify(friend);
+                        window.location.href = "/" + friend;
+                    });
+                });
+
+                ///////////////////////////////////////////////
+                /*
+                * Accept friend requests
+                */
+
+                $("body").on("click", "a.btnAccept", function (e) {
+                    e.preventDefault();
+
+                    var $this = $(this);
+                    var friendId = $this.data("id");
+                    var trRow = $this.data("row");
+
+                    var friend = '@ViewBag.UserName';
+                    console.log('rownum: ' + trRow);
+                    var url = "/profile/AcceptFriendRequest";
+                    $.post(url, { friendId: friendId }, function (data) {
+                    }).done(function () {
+                        //$this.parent().fadeOut("fast");
+                        hub.server.getFriendRequestCount(@ViewBag.UserID);
+
+                        //hub.server.getFriendCount(friendId);
+                        window.location.href = "/" + friend;
+                        $this.parent().parent().remove();
+                        //loadFriends(currentPageNumber);
+                    });
+                });
+
+                ///////////////////////////////////////////////
+                /*
+                * Decline friend requests
+                */
+
+                $("body").on("click", "a.btnDecline", function (e) {
+                    e.preventDefault();
+
+                    var $this = $(this);
+                    var friendId = $this.data("id");
+                    var trRow = $this.data("row");
+
+                    var friend = '@ViewBag.UserName';
+                    console.log('rownum: ' + trRow);
+                    var url = "/profile/DeclineFriendRequest";
+                    $.post(url, { friendId: friendId }, function (data) {
+                    }).done(function () {
+                        //$this.parent().fadeOut("fast");
+                        hub.server.getFriendRequestCount(@ViewBag.UserID);
+
+                        //hub.server.getFriendCount(friendId);
+                        window.location.href = "/" + friend;
+                        //$this.parent().parent().remove();
+                        //loadFriends(currentPageNumber);
+                    });
+                });
+
+            });
 
 
 

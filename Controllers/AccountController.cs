@@ -124,7 +124,7 @@ namespace RecipeForSuccess_mvc.Controllers
         public ActionResult Logout()
         {
             Session.Abandon();
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Login", "Account");
 
         }
 
@@ -144,23 +144,30 @@ namespace RecipeForSuccess_mvc.Controllers
         {
 
             // get logged in users userid
-            int user_id = Convert.ToInt32(Session["CurrentUserID"]);
+            //int user_id = Convert.ToInt32(Session["CurrentUserID"]);
 
             //string user = Session["CurrentUserName"].ToString();
 
             string user = User.Identity.Name;
 
+            // get logged in user's user_id
+            int user_id = usersService.GetUserIDByUserName(user);
+            ViewBag.UserID = user_id;
+
             // get logged in user's username
-            ViewBag.UserName = username;
+            ViewBag.UserName = user;
 
             // viewbag user's full name
             ViewBag.UserFullName = usersService.GetUserFullNameByUserID(user_id);
 
             // get viewing's full name
             ViewBag.ViewingFullName = usersService.GetUserFullNameByUserName(username);
+            ViewBag.ViewingUserName = username;
 
             // get viewint's user_id
             int viewing_id = usersService.GetUserIDByUserName(username);
+            //Session["ViewingID"] = viewing_id;
+            ViewBag.ViewingID = viewing_id;
 
             string userType = "guest";
             if (username.Equals(user))
@@ -169,6 +176,7 @@ namespace RecipeForSuccess_mvc.Controllers
             }
 
             ViewBag.UserType = userType;
+            //Session["UserType"] = userType;
 
             // check if they are friends
             if (userType == "guest")
@@ -187,13 +195,20 @@ namespace RecipeForSuccess_mvc.Controllers
                 }
             }
 
+            // get friend request count
+            var friendRequestCount = friendsService.GetFriendRequestCount(Convert.ToInt32(user_id));
+            if (friendRequestCount > 0)
+            {
+                ViewBag.FriendRequestCount = friendRequestCount;
+           
+                List<UserVM> listRequests = friendsService.GetFriendRequestsByUserID(user_id);
+                ViewBag.ListRequests = listRequests;
+            }
 
-            // get list of friends
-            List<UserVM> friends = friendsService.GetFriends(user_id);
+            //get count of friends
+            int friendCount = friendsService.GetFriendCount(viewing_id);
 
-            ViewBag.Friends = friends;
-
-
+            ViewBag.FriendCount = friendCount;
 
             return View();
         }

@@ -53,11 +53,11 @@
                         <li class="nav-item friendRequestCountLi">
                             @if (ViewBag.FriendRequestCount != null)
                             {
-                                <span class="friendRequestNotification @Session["CurrentUserName"].ToString() green"><span><i class="fa fa-user"></i>@ViewBag.FriendRequestCount</span></span>
+                                <span class="fa fa-users friendRequestNotification @Session["CurrentUserName"].ToString() green"><span>@ViewBag.FriendRequestCount</span></span>
                             }
                             else
                             {
-                                <span class="friendRequestNotification @Session["CurrentUserName"].ToString()"><span><i class="fa fa-user"></i></span></span>
+                                <span class="fa fa-users friendRequestNotification @Session["CurrentUserName"].ToString()"><span id="friendBadge"></span></span>
                             }
                             <ul id="friendRequestNotifUL"></ul>
                         </li>

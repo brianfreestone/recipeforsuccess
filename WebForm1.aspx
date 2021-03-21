@@ -24,9 +24,14 @@
             <asp:Parameter Name="recipe_id" />
         </SelectParameters>
     </asp:SqlDataSource>
-    <asp:SqlDataSource ID="SqlDataSource3" runat="server" ConnectionString="Data Source=INFO4430-rs-dev\sqlexpress;Initial Catalog=recipesuccess;Persist Security Info=True;User ID=sa;Password=IPp2muWQ1f5s" ProviderName="System.Data.SqlClient" SelectCommand="SELECT recipe_instruction.recipe_id, ingredient.ingredient_id, ingredient.name, ingredient.measure_value, recipe_instruction.recipe_instruction_id, recipe_instruction.instruction FROM ingredient RIGHT OUTER JOIN recipe_instruction ON ingredient.ingredient_id = recipe_instruction.ingredient_id WHERE (recipe_instruction.recipe_id = @recipe_id)">
+    <asp:SqlDataSource ID="SqlDataSource3" runat="server" ConnectionString="Data Source=INFO4430-rs-dev\sqlexpress;Initial Catalog=recipesuccess;Persist Security Info=True;User ID=sa;Password=IPp2muWQ1f5s" ProviderName="System.Data.SqlClient" SelectCommand="SELECT pu.user_id AS primaryUserID, pu.username AS primaryUsername, pu.first_name + ' ' + pu.last_name AS primaryUser, su.user_id AS secondaryUserID, su.username AS secondaryUsername, su.first_name + ' ' + su.last_name AS secondaryUser FROM friends INNER JOIN users AS pu ON friends.primary_user_id = pu.user_id INNER JOIN users AS su ON friends.secondary_user_id = su.user_id WHERE (friends.primary_user_id = @userID) OR (friends.secondary_user_id = @userID)">
         <SelectParameters>
-            <asp:Parameter Name="recipe_id" />
+            <asp:Parameter Name="userID" />
+        </SelectParameters>
+    </asp:SqlDataSource>
+    <asp:SqlDataSource ID="SqlDataSource4" runat="server" ConnectionString="Data Source=INFO4430-rs-dev\sqlexpress;Initial Catalog=recipesuccess;Persist Security Info=True;User ID=sa;Password=IPp2muWQ1f5s" ProviderName="System.Data.SqlClient" SelectCommand="SELECT recipe.name, recipe.created, users.username, users.first_name, users.last_name, users.user_id FROM recipe INNER JOIN users ON recipe.user_id = users.user_id WHERE (recipe.user_id IN (SELECT primary_user_id FROM (SELECT friends.secondary_user_id, friends_1.primary_user_id FROM friends CROSS JOIN friends AS friends_1 WHERE (friends.primary_user_id = @userID) AND (friends_1.secondary_user_id = @userID)) AS derivedtbl_1 UNION SELECT secondary_user_id FROM (SELECT friends_2.secondary_user_id, friends_1.primary_user_id FROM friends AS friends_2 CROSS JOIN friends AS friends_1 WHERE (friends_2.primary_user_id = @userID) AND (friends_1.secondary_user_id = @userID)) AS derivedtbl_1_1))">
+        <SelectParameters>
+            <asp:Parameter Name="userID" />
         </SelectParameters>
     </asp:SqlDataSource>
     </form>

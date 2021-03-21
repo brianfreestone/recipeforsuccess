@@ -25,14 +25,20 @@ namespace RecipeForSuccess_mvc.Views.Home
             if (Session["CurrentUserName"] != null)
             {
 
-                ViewBag.Username = Session["CurrentUserName"].ToString();
-
+                string userName = User.Identity.Name;
+                ViewBag.Username = userName;
+                int UserID = usersService.GetUserIDByUserName(userName);
+                ViewBag.UserID = UserID;
                 // get friend request count
-                var friendRequestCount = friendsService.GetFriendRequestCount(Convert.ToInt32(Session["CurrentUserID"]));
+                var friendRequestCount = friendsService.GetFriendRequestCount(UserID);
                 if (friendRequestCount > 0)
                 {
                     ViewBag.FriendRequestCount = friendRequestCount;
                 }
+
+                // get list of friends
+
+                // get list of 
             }
             return View();
         }

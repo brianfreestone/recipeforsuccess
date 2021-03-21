@@ -105,17 +105,143 @@ li.friendRequestNotificationLi a{
 
 .friendRequestNotification{
     color: lightblue;
-  
+}
 
+.divAddFriendFromPage{
+    color:white !important;
+}
+
+.divFriendContainer {
+   /* width: 250px;*/
+    /*border: .5px solid #c8c5c5;*/
+    /*border-radius: 6px;*/
+    height: 45px;
+    /*padding-bottom: 5px;*/
+
+
+}
+
+.divCurrentFriends, .divRequests {
+    border: 1px solid lightgray;
+    border-radius:15px;
+   /* max-width:250px;*/
+    padding: 5px;
+}
+
+#tblFriends, #tblRequests {
+    width: 100%;
+}
+
+    #tblFriends tr, #tblRequests tr {
+        border-collapse: separate;
+        border-spacing: 0 1em !important;
+    }
+      /*  #tblFriends tr td:first-child,
+        #tblRequests tr td:first-child {
+            width: 100%;
+        }*/
+
+        #tblFriends tr td, #tblRequests tr td {
+            padding-left: 5px;
+        }
+
+.btnAddNewFriend {
+    font-size: x-small;
+    background-color: #4582ec;
+    color: white;
+    padding: 8px;
+    border-radius: 85px;
+    text-decoration: none;
+    float: right;
+}
+
+    .btnAddNewFriend:hover {
+        text-decoration: none;
+        color: white;
+        background-color: #0652DD;
+    }
+
+.btnAccept {
+    font-size:x-small;
+    background: #02b875;
+    color: white;
+    padding: 8px;
+    border-radius:5px;
+}
+
+    .btnAccept:hover {
+        color: white;
+        background-color: #02925d;
+        border-color: #018655;
+        text-decoration:none;
+    }
+
+.btnDecline {
+    font-size: x-small;
+    background: #d9534f;
+    color: white;
+    padding: 8px;
+    border-radius: 5px;
+}
+    .btnDecline:hover {
+        color: white;
+        background-color: #d23430;
+        border-color: #c9302c;
+        text-decoration: none;
+    }
+
+.btnPendingFriend {
+    font-size: x-small;
+    background: #f0ad4e;
+    color: white;
+    padding: 8px;
+    border-radius: 5px;
+    cursor:default;
+}
+
+.btnPendingFriend:hover {
+    color:white;
+    text-decoration: none;
+}
+
+.divFriendName {
+    margin-top: 18px;
+    float: left;
+    margin-left: 5px;
+}
+
+.divFriendButton{
+    float:right;
+    margin-top:20px;
+    margin-right:5px;
+}
+
+.clickAddFriend, .clickViewFriend {
+    color:black;
+    
+}
+
+
+.notifBadge {
+    font-size:x-small;
+}
+
+
+.clickAddFriend:hover {
+    text-decoration: underline;
 }
 
 
 
 
-.friendRequestNotification.green {
-    color: green;
-    cursor: pointer;
-}
+
+
+
+
+    .friendRequestNotification.green {
+        color: green;
+        cursor: pointer;
+    }
 
 .friendRequestCountLi {
     position: relative;
