@@ -274,6 +274,8 @@
     <Content Include="Areas\Admin\Views\_ViewStart.cshtml" />
     <Content Include="Areas\Admin\Views\Shared\_Layout.cshtml" />
     <Content Include="Areas\Admin\Views\AdminHome\Index.cshtml" />
+    <Content Include="Images\whitestar.png" />
+    <Content Include="Images\yellowstar.png" />
     <Content Include="Scripts\bootstrap.bundle.js" />
     <Content Include="Scripts\bootstrap.bundle.min.js" />
     <Content Include="Scripts\bootstrap.js" />
@@ -354,7 +356,16 @@
     <Content Include="Scripts\umd\popper-utils.min.js" />
     <Content Include="Scripts\umd\popper.js" />
     <Content Include="Scripts\umd\popper.min.js" />
+    <Content Include="Uploads\19.jpg" />
+    <Content Include="Uploads\31.jpg" />
     <Content Include="Uploads\32.jpg" />
+    <Content Include="Uploads\33.jpg" />
+    <Content Include="Uploads\35.jpg" />
+    <Content Include="Uploads\36.jpg" />
+    <Content Include="Uploads\39.jpg" />
+    <Content Include="Uploads\41.jpg" />
+    <Content Include="Uploads\42.jpg" />
+    <Content Include="Uploads\43.jpg" />
     <Content Include="WebForm1.aspx" />
     <Content Include="Content\bootstrap.min.css.map" />
     <Content Include="Content\bootstrap.css.map" />
@@ -451,6 +462,8 @@
     <Content Include="Views\Recipes\AddIngredient.cshtml" />
     <Content Include="Views\Shared\_TableDataPartial.cshtml" />
     <Content Include="Views\Recipes\AddRecipe.cshtml" />
+    <Content Include="Views\Shared\_VoteNowPartial.cshtml" />
+    <Content Include="Views\Recipes\ViewRecipe.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -462,6 +475,7 @@
     <Folder Include="App_Data\" />
     <Folder Include="Areas\Admin\Data\" />
     <Folder Include="Models\Data\ViewModels\" />
+    <Folder Include="Uploads\Users\" />
     <Folder Include="Views\Profile\" />
   </ItemGroup>
   <ItemGroup>

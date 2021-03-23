@@ -1,0 +1,68 @@
+﻿@model RecipeForSuccess.ViewModels.RecipeViewVM
+
+@{
+    ViewBag.Title = "ViewRecipe";
+}
+
+<div class="mainBody mt-5">
+    <div class="container">
+        <div class="card bg-light mb-3 border-light recipeCard">
+
+            <div class="card-header">
+                <h3>@Html.DisplayFor(model => model.Name)</h3>
+            </div>
+            <div class="card-body">
+
+                <div class="recipe-summary">
+                    <p id="summary">@Html.DisplayFor(model => model.Description)</p>
+                </div>
+                <div class="recipeMealType badge badge-info mb-2">
+                    @Html.DisplayFor(model => model.Meal_type_name)
+                </div>
+                <div class="author">
+                    <a href="/@Model.Username" class="author-profile"><img src="~/Uploads/Users/@(Model.recipe_id).jpg" class="img-thumbnail authorImage" /></a>
+                    <span id="authorName">By <a href="/@Model.Username" class="author-profile">@Model.Username</a></span>
+                </div>
+                <div class="recipeImage mt-3">
+                    <img src="~/Uploads/@(Model.recipe_id).jpg" id="recipeImage" class="img-thumbnail rounded">
+                </div>
+                <div class="ingredientsBody mt-2">
+                    <h3>Ingredients</h3>
+                    <div class="ingredients mt-4">
+                        @foreach (var item in Model.Ingredients)
+                        {
+                            <div class="ingredient">@item.IngredientName</div>
+                        }
+                    </div>
+                </div>
+                <div class="instructionsBody mt-4">
+                    <h3>Directions</h3>
+                    <div class="instructions mt-4">
+                        @{
+                            int counter = 1;
+                            foreach (var item in Model.Instructions)
+                            {
+                                <div class="instruction">
+                                    <div class="instructionStep">Step @counter</div>
+                                    <div class="instructionText">
+                                        @item.InstructionName
+                                    </div>
+                                </div>
+                                counter++;
+                            }
+                        }
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+    </div>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { /* id = Model.PrimaryKey */ }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

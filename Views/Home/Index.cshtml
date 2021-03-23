@@ -16,9 +16,10 @@
 @if (Session["CurrentUserName"] != null)
 {
 
-    <h2>Home</h2>
-    <div class="row">
-        <div class="col-6">
+    <div class="container">
+
+        <div class="row">
+            <div class="col-6">
 
                 <ul class="nav navbar-nav">
                     <li class="userLiveSearchLi">
@@ -27,32 +28,35 @@
                     </li>
                 </ul>
             </div>
-        <div class="col-6">
+            <div class="col-6">
 
-            <ul class="nav navbar-nav">
-                <li class="recipeLiveSearchLi">
-                    <input id="recipeSearchText" class="searchText form-control" type="text" placeholder="Search Recipes" />
-                    <ul id="recipeLiveSearchUl"></ul>
-                </li>
-            </ul>
-        </div>
-    </div>
-
-    <div class="row">
-
-        <div class="feed">
-
-            <table id="tblFeed">
-                <thead>
-                    <tr>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
-
+                <ul class="nav navbar-nav">
+                    <li class="recipeLiveSearchLi">
+                        <input id="recipeSearchText" class="searchText form-control" type="text" placeholder="Search Recipes" />
+                        <ul id="recipeLiveSearchUl"></ul>
+                    </li>
+                </ul>
+            </div>
         </div>
 
+        <div class="row">
+
+            <div class="feed">
+
+                <table id="tblFeed">
+                    <thead>
+                        <tr>
+                            <th></th>
+                
+
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+
+            </div>
+
+        </div>
     </div>
 }
 
@@ -71,14 +75,21 @@
             var currentPageNumber = 1;
             loadFeed(currentPageNumber);
 
+            $(window).scroll(function () {
+                if ($(window).scrollTop() == $(document).height() - $(window).height()) {
+                    currentPageNumber += 1;
+                    loadFeed(currentPageNumber);
+                }
+            });
+
             function loadFeed(currentPage) {
 
                 var userID = '@ViewBag.UserID';
 
                 $.ajax({
-                    url: 'FriendService.asmx/GetRecipes',
+                    url: '/FriendService.asmx/GetRecipes',
                     method: 'post',
-                    data: { pageNumber: currentPage, pageSize: 10, userID: userID },
+                    data: { pageNumber: currentPage, pageSize: 3, userID: userID },
                     dataType: 'json',
                     success: function (data) {
                         var feedTable = $('#tblFeed tbody');
@@ -86,23 +97,133 @@
                         $(data).each(function (index, post) {
 
                             //var counter = 0;
-
+                            var rating = post.Rating;
                             console.log(post.User_id);
-                            var tr = '<tr class=divFriendContainer><td><a href="/' + post.Username + '" class=clickViewFriend data-id="' + post.User_id + '">' + post.UserFullName + '</a></td><td>';
-                       
-                            tr = tr + '<td>' + post.RecipeName + ' ' + post.Description + ' ' + post.Created + '</td></tr >';
-                       
-                               
-                   
+                            var tr = '<tr>' +
+                                '<td>' +
+                                '<div class="card border-secondary postCard mb-3"><div class="card-header postCardHeader">By: <a href ="/' + post.Username +  '" class=postUserName data-id="' + post.User_id + '">' + post.Username + '</a><span class=postCreated>' + post.Created.toString() + '</span></div><div class="card-body"><h4 class="card-title"><img src="/Uploads/' + post.RecipeID + '.jpg" class="postRecipePic img-thumbnail" /><br/>' + post.RecipeName + '</h4><p class="card-text"><br/>' + post.Description + '</p>' +
+                                '<a href="#" class="btn btn-sm btn-success viewRecipe" data-id="' + post.RecipeID + '" >View Recipe</a> ' +
+                                '<div class="ratingDiv post.RecipeID" data-recipeid=' + post.RecipeID + '>';
+                                if(rating >=1) {
+                                   tr += '<img src="/Images/yellowstar.png" class="ratingStar" data-value="1" />';
+                                } else {
+                                   tr += '<img src="/Images/whitestar.png" class="ratingStar" data-value="1" />';
+                                }
+                                if (rating >= 2) {
+                                    tr += '<img src="/Images/yellowstar.png" class="ratingStar" data-value="2" />';
+                                } else {
+                                    tr += '<img src="/Images/whitestar.png" class="ratingStar" data-value="2" />';
+                                }
+                                if (rating >= 3) {
+                                    tr += '<img src="/Images/yellowstar.png" class="ratingStar" data-value="3" />';
+                                } else {
+                                    tr += '<img src="/Images/whitestar.png" class="ratingStar" data-value="3" />';
+                                } if (rating >= 4) {
+                                    tr += '<img src="/Images/yellowstar.png" class="ratingStar" data-value="4" />';
+                                } else {
+                                    tr += '<img src="/Images/whitestar.png" class="ratingStar" data-value="4" />';
+                                } if (rating >= 4) {
+                                    tr += '<img src="/Images/yellowstar.png" class="ratingStar" data-value="5" />';
+                                } else {
+                                    tr += '<img src="/Images/whitestar.png" class="ratingStar" data-value="5" />';
+                                }
 
-                            //counter++;
+                                //'<img src="/Images/whitestar.png" class="ratingStar" data-value="2"/>' +
+                                //'<img src="/Images/whitestar.png" class="ratingStar" data-value="3"/>' +
+                                //'<img src="/Images/whitestar.png" class="ratingStar" data-value="4"/>' +
+                                //'<img src="/Images/whitestar.png" class="ratingStar" data-value="5"/>' +
+                            tr += post.NumRates; // + ' ' + post.Rating +
+                                '</div>';
+                                    //'<a href="#" class=rateMe data-value="2"><img src="/Images/whitestar.png" class="ratingStar"/></a>' +
+                                    //'<a href="#" class=rateMe data-value="3"><img src="/Images/whitestar.png" class="ratingStar"/></a>' +
+                                    //'<a href="#" class=rateMe data-value="4"><img src="/Images/whitestar.png" class="ratingStar"/></a>' +
+                                    //'<a href="#" class=rateMe data-value="5"><img src="/Images/whitestar.png" class="ratingStar"/></a>' +
+                                    //'</div>';
 
-                            feedTable.append(tr);
+                                    //var tr = '<tr class=trPostContainer><td class=tdPostRecipePic><img src="/Uploads/' + post.RecipeID + '.jpg" class="postRecipePic img-thumbnail" /></td><td class=tdPostRecipeName><a href="/' + post.RecipeID + '" class=postRecipeName ">' + post.RecipeName + '</a></td><td>';
+                                    //tr = tr + '<td class=tdPostRecipeDescription>' + post.Description + '</td><td><a href ="/' + post.userID + ' class=postUserName data-id="' + post.User_id + '">' + post.Username + '</a></td><td>"'+ post.Created + '</td></tr >';
 
-                        });
+                                    //'<a href="#" class=rateMe data-value="1">
+
+
+                                    //counter++;
+
+                                    feedTable.append(tr);
+
+                                });
                     }
                 });
             }
+
+
+            @*$.post(url, { friendId: friendId }, function (data) {
+                    }).done(function () {
+                        $this.parent().fadeOut("fast");
+                        hub.server.getFriendRequestCount(@Session["CurrentUserID"]);
+                        //hub.server.getFriendCount(friendId);
+
+                    });*@
+
+            /*
+             *  Click on Recipe to View
+             */
+            $("body").on("click", ".viewRecipe", function (e) {
+                e.preventDefault();
+                var $this = $(this);
+
+                var recipeID = $this.data("id");
+                var userID = @ViewBag.UserID;
+                var url = "recipes/ViewRecipe/";
+                window.location.href = url + recipeID + userID;
+            });
+
+            /*
+             *  Star Rating
+             */
+
+            //var clickedFlag = false;
+            $("body").on("mouseover", ".ratingStar", function () {
+
+                var $this = $(this);
+                var starRating = $this.data("value");
+                console.log(starRating);
+
+                $this.attr("src", "/Images/yellowstar.png").width('18px').prevAll("img.ratingStar").attr("src", "/Images/yellowstar.png").width('18px');
+                $this.attr("src", "/Images/yellowstar.png").prevAll("img.ratingStar").attr("src", "/Images/yellowstar.png");
+
+            });
+            $("body").on("mouseout", ".ratingStar", function (e) {
+
+                $(this).attr("src", "/Images/whitestar.png");
+            });
+            $("body").on("mouseout", ".ratingDiv", function () {
+                //if (!clickedFlag) {
+                    //$(".ratingStar").attr("src", "/Images/whitestar.png");
+                //}
+            });
+            $("body").on("click", ".ratingStar", function () {
+                var $this = $(this);
+                var recipeid = $this.parent().data("recipeid");
+                var userid = @ViewBag.UserID;
+                var rating = $this.data("value");
+                console.log(recipeid);
+                console.log(userid);
+                console.log(rating);
+
+                //clickedFlag = true;
+                //$(".ratingStar").unbind("mouseout mouseover click").css("cursor", "default");
+
+                //var url = "/Home/SendRating?r=" + $(this).attr("data-value") + "&s=5&idModel&url=url";
+                //$.post(url, null, function (data) {
+                    //$("#lblResult").html(data);
+                //});
+            });
+            //$("#lblResult").ajaxStart(function () {
+            //    $("#lblResult").html("Processing ....");
+            //});
+            //$("#lblResult").ajaxError(function () {
+            //    $("#lblResult").html("<br />Error occured.");
+            //});
 
             /*
              * Live Search Username

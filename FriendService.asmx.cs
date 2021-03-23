@@ -32,7 +32,8 @@ namespace RecipeForSuccess_mvc
 
             List<RecipeVM> friendsRecipes = friendsService.GetFriendsRecipesByUserID(pageNumber, pageSize, userID);
 
-            
+            int numRates = 0; // RecipesService.GetRates();
+            float rating = 3; // RecipesService.GetRating();
 
             foreach (RecipeVM item in friendsRecipes)            
             {
@@ -42,10 +43,12 @@ namespace RecipeForSuccess_mvc
                     Description = item.Description,
                     RecipeID = (int)item.recipe_id,
                     UserID = (int)item.User_id,
-                    Created = item.Created,
+                    Created = item.Created.ToString("dddd, dd MMMM yyyy hh:mm tt"),
                     RecipeName = item.Name,
                     Username = user.Username,
-                    UserFullName = user.First_name + ' ' + user.Last_name
+                    UserFullName = user.First_name + ' ' + user.Last_name,
+                    NumRates = numRates,
+                    Rating = rating
                 };
                 listUserRecipes.Add(userRecipeVM);
             }

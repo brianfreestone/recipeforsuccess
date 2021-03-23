@@ -38,10 +38,10 @@
         {
             <tr>
                 <td>
-                    <img src="~/Uploads/@(item.recipe_id).jpg" id="recipePic" />
+                    <img src="~/Uploads/@(item.recipe_id).jpg" id="recipePic" class="rounded" />
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Name)
+                    @Html.ActionLink(item.Name, "ViewRecipe", new { recipeID = item.recipe_id })
                 </td>
 
                 <td class="created">
@@ -66,9 +66,9 @@
 
                 </td>
                 <td>
-                    @*@Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                        @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                        @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })*@
+                    @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                        @Html.ActionLink("Details", "ViewRecipe", new { recipeID = item.recipe_id }) |
+                        @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
                 </td>
             </tr>
         }

@@ -16,7 +16,7 @@ namespace RecipeForSuccess_mvc.Controllers
         IFriendsService friendsService;
         IUsersService usersService;
 
-        public RecipesController(IRecipesService recipesService, IFriendsService friendsService,IUsersService usersService)
+        public RecipesController(IRecipesService recipesService, IFriendsService friendsService, IUsersService usersService)
         {
             this.recipesService = recipesService;
             this.friendsService = friendsService;
@@ -29,8 +29,9 @@ namespace RecipeForSuccess_mvc.Controllers
         {
             string userName = User.Identity.Name;
             ViewBag.Username = userName;
-            
+
             int user_id = usersService.GetUserIDByUserName(userName);
+            ViewBag.UserID = user_id;
 
             // get friend request count
             var friendRequestCount = friendsService.GetFriendRequestCount(user_id);
@@ -68,7 +69,7 @@ namespace RecipeForSuccess_mvc.Controllers
                 int user_id = Convert.ToInt32(Session["CurrentUserID"]);
                 recipeVM.User_id = user_id;
 
-               
+
 
                 // check if file was uploaded
                 if (file != null && file.ContentLength > 0)
@@ -91,7 +92,7 @@ namespace RecipeForSuccess_mvc.Controllers
 
                 }
 
-                int recipeID =  recipesService.InsertRecipe(recipeVM, file);
+                int recipeID = recipesService.InsertRecipe(recipeVM, file);
 
                 // set upload directory
                 var uploadsDirectory = new DirectoryInfo(string.Format("{0}Uploads", Server.MapPath(@"\")));
@@ -121,6 +122,37 @@ namespace RecipeForSuccess_mvc.Controllers
 
             return RedirectToAction("Index", "Recipes");
 
+        }
+
+        [HttpGet]
+        public ActionResult ViewRecipe(int recipeID)
+        {
+            string userName = User.Identity.Name;
+            int userID = usersService.GetUserIDByUserName(userName);
+
+            // todo check if recipe exists
+            if (recipesService.RecipeExistsByRecipeID(recipeID))
+            {
+                // check if user is allowed to look at recipe
+                if (recipesService.IsFriendsRecipeIDs(recipeID, userID))
+                {
+
+                    RecipeViewVM recipe = recipesService.GetRecipeByRecipeID(recipeID);
+                    recipe.recipe_id = recipeID;
+                    recipe.Username = usersService.GetUserFullNameByUserID((int)recipe.User_id);
+                    return View(recipe);
+                }
+            }
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public ActionResult ViewRecipeById(int recipeID)
+        {
+            RecipeViewVM recipe = recipesService.GetRecipeByRecipeID(recipeID);
+            recipe.recipe_id = recipeID;
+            recipe.Username = usersService.GetUserFullNameByUserID((int)recipe.User_id);
+            return View(recipe);
         }
 
         [HttpGet]
@@ -160,6 +192,6 @@ namespace RecipeForSuccess_mvc.Controllers
             recipesService.UpdateFavorite(recipeID, userID, favoriteType);
         }
 
-       
+
     }
 }
