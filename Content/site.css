@@ -76,7 +76,7 @@ li.userLiveSearchLi, li.recipeLiveSearchLi {
 
 
 
-ul#userLiveSearchUl {
+ul#userLiveSearchUl, ul#recipeLiveSearchUl {
     position: absolute;
     background: #8a8484;
     right: -10px;
@@ -99,6 +99,7 @@ ul#friendRequestNotifUL li.close {
 }
 
 li.userLiveSearchLi a,
+li.recipeLiveSearchLi a,
 li.friendRequestNotificationLi a {
     color: white;
 }
@@ -115,24 +116,26 @@ li.friendRequestNotificationLi a {
     /* width: 250px;*/
     /*border: .5px solid #c8c5c5;*/
     /*border-radius: 6px;*/
-    height: 45px;
+    /*height: 45px;*/
     /*padding-bottom: 5px;*/
 }
 
 .divCurrentFriends, .divRequests {
-    border: 1px solid lightgray;
-    border-radius: 15px;
+    border: 1px solid gray;
+    border-radius: 2px;
     /* max-width:250px;*/
     padding: 5px;
 }
 
 #tblFriends, #tblRequests {
-    width: 100%;
+    border-collapse: collapse !important;
+    border-spacing: 0 !important;
+    /*border: 1px solid gray;*/
 }
 
     #tblFriends tr, #tblRequests tr {
-        border-collapse: separate;
-        border-spacing: 0 1em !important;
+        padding: 0;
+        /*line-height: 0;*/
     }
         /*  #tblFriends tr td:first-child,
         #tblRequests tr td:first-child {
@@ -140,8 +143,17 @@ li.friendRequestNotificationLi a {
         }*/
 
         #tblFriends tr td, #tblRequests tr td {
-            padding-left: 5px;
+           font-size:small;
         }
+
+.cardFriendsBody {
+    padding:0 0 5px 0;
+}
+
+.cardFriends {
+    max-width:500px;
+}
+
 
 .btnAddNewFriend {
     font-size: x-small;
@@ -542,7 +554,7 @@ span.fa-heart-o {
 
 .instructionStep {
     font-weight: 800;
-    font-size: 16px;
+    font-size: 14px;
     margin-bottom: 3px;
     /*margin-left:5px;*/
 }
@@ -572,8 +584,44 @@ span.fa-heart-o {
 .commentsHead {
     float: left;
 }
+.commentsBody {
+    font-size: 14px;
+}
+
+.comment {
+    font-size:14px;
+}
 
 .commentsLeave {
     float: right;
     margin-top: 5px;
 }
+
+.userNameContainer{
+    margin-left:160px;
+}
+
+.sidenav {
+    height: 100%;
+    width: 160px;
+   
+    z-index: 1;
+    /*top: 50px;*/
+    left: 0;
+    /*background-color: #111;*/
+    overflow-x: hidden;
+    /*padding-top: 20px;*/
+}
+
+    .sidenav a {
+        padding: 6px 8px 6px 16px;
+        text-decoration: none;
+        font-size: 20px;
+        color: black;
+        display: block;
+    }
+
+        .sidenav a:hover {
+            color: blue;
+        }
+

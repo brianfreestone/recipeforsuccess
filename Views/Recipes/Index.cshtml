@@ -7,10 +7,18 @@
 <div class="container">
 
     <h2>My Recipes</h2>
+    <div class="row">
 
-    <p>
-        @Html.ActionLink("Create New", "AddRecipe", new object { }, new { @class = "btn btn-primary" })
-    </p>
+        <p class="float-left">
+            @Html.ActionLink("Create New", "AddRecipe", new object { }, new { @class = "btn btn-primary", style = "margin-top:11px; margin-right:5px;" })
+        </p>
+        <ul class="nav navbar-nav float-right">
+            <li class="recipeLiveSearchLi mainSearchLi">
+                <input id="recipeSearchText" class="searchText form-control" type="text" placeholder="Search Recipes" />
+                <ul id="recipeLiveSearchUl"></ul>
+            </li>
+        </ul>
+    </div>
     <table class="table table-responsive-sm">
         <tr>
             <th></th>
@@ -31,6 +39,11 @@
             <th>
                 @Html.DisplayNameFor(model => model.Favorite)
             </th>
+            <th>
+                Rating
+            </th>
+         
+
             <th></th>
         </tr>
 
@@ -48,6 +61,7 @@
                     @Html.DisplayFor(modelItem => item.Created)
                 </td>
                 <td class="description">
+                  
                     @Html.DisplayFor(modelItem => item.Description)
                 </td>
 
@@ -57,18 +71,21 @@
                 <td>
                     @if (item.Favorite == true)
                     {
-                        <a class="favorite" data-rid="@item.recipe_id" data-uid="@item.User_id">  <span class="fa fa-heart"></span></a>
+                        <a class="favorite" href="#" data-rid="@item.recipe_id" data-uid="@item.User_id">  <span class="fa fa-heart fa-star"></span></a>
                     }
                     else
                     {
-                        <a class="favorite" data-rid="@item.recipe_id" data-uid="@item.User_id">  <span class="fa fa-heart-o"></span></a>
+                        <a class="favorite" href ="#" data-rid="@item.recipe_id" data-uid="@item.User_id">  <span class="fa fa-heart-o"></span></a>
                     }
 
                 </td>
                 <td>
-                    @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                        @Html.ActionLink("Details", "ViewRecipe", new { recipeID = item.recipe_id }) |
-                        @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                  class="rating"   ☆ data-id="1" ☆ data-id ="2" ☆ ☆ ☆
+                </td>
+                <td>
+                    @*@Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |*@
+                    @Html.ActionLink("Details", "ViewRecipe", new { recipeID = item.recipe_id }) |
+                    @*@Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })*@
                 </td>
             </tr>
         }
@@ -85,16 +102,19 @@
         $(document).ready(function () {
 
 
-
+            /*
+             *
+             * Favorite recipe
+             * */
             $("body").on("click", "a.favorite", function (e) {
                 e.preventDefault();
 
                 var $this = $(this);
                 var favClass = $this.find("span").attr('class');
-                console.log("favClass: " + favClass);
+                //console.log("favClass: " + favClass);
 
                 var classesArray = favClass.split(" ");
-                console.log("classes array: " + classesArray);
+                //console.log("classes array: " + classesArray);
 
                 var favoriteType;
 
@@ -106,10 +126,11 @@
                     }
                 });
 
-                console.log(favoriteType);
+                //console.log(favoriteType);
 
                 var recipeID = $this.data("rid");
                 var userID = $this.data("uid");
+                var rating = $this.data("id");
 
                 console.log("recipeID=" + recipeID);
                 console.log("userID=" + userID);
@@ -126,6 +147,65 @@
                     }
                 });
             });
+
+            /*
+            * Live Search Recipe
+            */
+
+            $('input#recipeSearchText').blur(function () {
+
+            });
+
+            $('input#recipeSearchText').keyup(function () {
+                $('ul#recipeLiveSearchUl').empty();
+
+              
+
+                var currentRecipePageNumber = 1;
+                //$('#tblRecipes tbody').find("tr").remove();
+                var searchVal = $('input#recipeSearchText').val();
+
+                if (searchVal == "" || searchVal == " " || searchVal.length < 1) {
+                    return false
+                }
+
+                loadRecipes(currentRecipePageNumber, searchVal);
+
+                $(window).scroll(function () {
+                    if ($(window).scrollTop() == $(document).height() - $(window).height()) {
+                        currentRecipePageNumber += 1;
+                        loadRecipes(currentRecipePageNumber);
+                    }
+                });
+
+            });
+
+            // recipe search click close
+            $("body").on('click', 'ul#recipeLiveSearchUl li.close', function () {
+                $('ul#recipeLiveSearchUl').empty();
+                $('input#recipeSearchText').val('');
+            });
+
+            function loadRecipes(currentPage, searchVal) {
+                $.ajax({
+                    url: '/FriendService.asmx/SearchRecipes',
+                    method: 'post',
+                    data: { pageNumber: currentPage, pageSize: 15, searchVal: searchVal },
+                    dataType: 'json',
+                    success: function (data) {
+                        //var recipeTable = $('#tblRecipes tbody');
+                        if (data.length > 0) {
+                            $('ul#recipeLiveSearchUl').append("<li class=close>x</li>");
+                            $(data).each(function (index, recipe) {
+                                //var tr = '<tr><td>' + recipe.Name + '</td></tr>';
+                                //console.log(tr);
+                                //recipeTable.append(tr);
+                                $('ul#recipeLiveSearchUl').append('<li class="recipeLiveSearchLi" ><i class="fa fa-search mr-2"></i><a class=searchLi data-id="' + recipe.recipe_id + '" href="/recipes/viewrecipe?recipeID=' + recipe.recipe_id + '">' + recipe.Name + '</a></li>');
+                            });
+                        }
+                    }
+                });
+            }
 
              /*
             * Display friend requests

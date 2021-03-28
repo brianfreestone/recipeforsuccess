@@ -4,18 +4,26 @@
 }
 
 @*<h2>@ViewBag.UserName</h2>*@
-<div class="container">
 
+<div class="container mt-5">
     <div class="row">
-        <div class="col-xs-12 col-md-6 col-lg-5">
+
+
+        <div class="col-lg-2 sidenav">
+
+            <a href="/account/viewfriends?userID=@ViewBag.UserID">Friends</a>
+            <a href="/recipes/Index?userID=@ViewBag.UserID">Recipes</a>
+
+        </div>
+        <div class="col-4">
             <div class="user-layout">
                 <p class="userImg">
 
                 </p>
                 <div class="row">
 
-                    <div class="col-4"><h3>@ViewBag.ViewingFullName</h3></div>
-                    <div class="col-3"><h5 class="mt-2">(@ViewBag.ViewingUserName)</h5></div>
+                    <div class="col"><h3>@ViewBag.ViewingFullName</h3></div>
+
                 </div>
             </div>
             @if (ViewBag.UserType == "guest")
@@ -24,13 +32,13 @@
                     @if (ViewBag.NotFriends == "Pending")
                     {
                         <span class="areFriendsDiv badge badge-warning">
-                           Pending Friend Request.
+                            Pending Friend Request.
                         </span>
                     }
                     else if (ViewBag.NotFriends == "True")
                     {
                         //<span class="areFriendsDiv badge badge-primary">
-                            <a href="#" class="addFriendFromPage areFriendsDiv badge badge-primary">Add Friend</a>
+                        <a href="#" class="addFriendFromPage areFriendsDiv badge badge-primary">Add Friend</a>
                         //</span>
                     }
                     else
@@ -42,13 +50,31 @@
                 </div>
             }
         </div>
-        <div class="col-6">
+        <div class="col-4 mt-4">
+            <div class="feed">
+
+                <table id="tblFeed">
+                    <thead>
+                        <tr>
+                            <th></th>
+
+
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+
+            </div>
 
         </div>
+
     </div>
 
-   
-        <div class="row">
+
+
+
+    @*friends search*@
+    @*<div class="row">
 
             <div class="col-md-6 col-lg-4">
                 <ul class="nav navbar-nav">
@@ -60,112 +86,112 @@
             </div>
 
 
+        </div>*@
+
+    <!--<div class="row">
+    <div class="col mt-3 mr-3 card">
+        <div class="card-body">
+            <h5 class="card-title">Friends</h5>
+
+            <div class="myFriends ml-4">
+                @ViewBag.FriendCount
+
+                @if (ViewBag.FriendCount == 0 || ViewBag.FriendCount > 1)
+                {
+                    <span>Friends</span>
+                }
+                else
+                {
+                    <span>Friend</span>
+                }
+
+            </div>
+
+            @if (ViewBag.FriendCount > 0)
+            {
+                <div class="divCurrentFriends mt-2 @User.Identity.Name">
+                    <table id="tblFriends">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            }-->
+    @*<div class="divFriendContainer clearfix">
+            <div class="divFriendName">
+                <a href="#" class="clickAddFriend" data-id="@friend.User_id">@friend.First_name @friend.Last_name</a>
+            </div>
+            <div class="divFriendButton">
+                @if (ViewBag.UserType == "guest")
+                {
+                    <a href="#" class="btnAddNewFriend" data-id="@friend.User_id">Add Friend</a>
+                }
+            </div>
+        </div>*@
+
+
+    <!--</div>
+
         </div>
-  
-        <div class="row">
-            <div class="col-md-4 mt-3 mr-3 card">
+        @if (ViewBag.UserType == "owner")
+        {
+            <div class="col ml-3 mt-3 card">
                 <div class="card-body">
-                    <h5 class="card-title">Friends</h5>
-
-                    <div class="myFriends ml-4">
-                        @ViewBag.FriendCount
-
-                        @if (ViewBag.FriendCount == 0 || ViewBag.FriendCount > 1)
-                        {
-                            <span>Friends</span>
-                        }
-                        else
-                        {
-                            <span>Friend</span>
-                        }
-
-                    </div>
-
-                    @if (ViewBag.FriendCount > 0)
+                    <h5 class="card-title">Friend Requests</h5>
+                    @if (ViewBag.UserType == "owner")
                     {
-                        <div class="divCurrentFriends mt-2 @User.Identity.Name">
-                            <table id="tblFriends">
-                                <thead>
-                                    <tr>
-                                        <th></th>
-                                        <th></th>
-                                    </tr>
-                                </thead>
-                                <tbody></tbody>
-                            </table>
+                        <div class="myFriends ml-4">
+                            @if (ViewBag.FriendRequestCount > 0)
+                            {
+                                <span>
+                                    @ViewBag.FriendRequestCount Friend Requests
+                                </span>
+                            }
+                            else
+                            {
+                                <span>
+                                    0 Friend Requests
+                                </span>
+                            }
                         </div>
+
+                        if (ViewBag.FriendRequestCount > 0)
+                        {
+                            <div class="divRequests mt-2">
+
+                                <table id="tblRequests">
+                                    @foreach (var request in ViewBag.ListRequests)
+                                    {
+                                        int counter = 0;
+                                        <tr class=divFriendContainer>
+                                            <td>
+                                                <a href="/@request.Username" class="clickViewFriend">@request.First_name @request.Last_name</a>
+                                            </td>
+                                            <td>
+                                                <a href="#" class="btnAccept acceptRequest" data-row=@counter data-id="@request.User_id">Accept</a>
+                                            </td>
+                                            <td>
+                                                <a href="#" class="btnDecline declineRequest" data-row=@counter data-id="@request.User_id">Decline</a>
+                                            </td>
+                                        </tr>
+
+                                        counter++;
+                                    }
+                                </table>
+                            </div>
+                        }
                     }
 
-                    @*<div class="divFriendContainer clearfix">
-                    <div class="divFriendName">
-                        <a href="#" class="clickAddFriend" data-id="@friend.User_id">@friend.First_name @friend.Last_name</a>
-                    </div>
-                    <div class="divFriendButton">
-                        @if (ViewBag.UserType == "guest")
-                        {
-                            <a href="#" class="btnAddNewFriend" data-id="@friend.User_id">Add Friend</a>
-                        }
-                    </div>
-                </div>*@
-
-
                 </div>
-
             </div>
-            @if (ViewBag.UserType == "owner")
-            {
-                <div class="col-md-4 ml-3 mt-3 card">
-                    <div class="card-body">
-                        <h5 class="card-title">Friend Requests</h5>
-                        @if (ViewBag.UserType == "owner")
-                        {
-                            <div class="myFriends ml-4">
-                                @if (ViewBag.FriendRequestCount > 0)
-                                {
-                                    <span>
-                                        @ViewBag.FriendRequestCount Friend Requests
-                                    </span>
-                                }
-                                else
-                                {
-                                    <span>
-                                        0 Friend Requests
-                                    </span>
-                                }
-                            </div>
-
-                            if (ViewBag.FriendRequestCount > 0)
-                            {
-                                <div class="divRequests mt-2">
-
-                                    <table id="tblRequests">
-                                        @foreach (var request in ViewBag.ListRequests)
-                                        {
-                                            int counter = 0;
-                                            <tr class=divFriendContainer>
-                                                <td>
-                                                    <a href="/@request.Username" class="clickViewFriend">@request.First_name @request.Last_name</a>
-                                                </td>
-                                                <td>
-                                                    <a href="#" class="btnAccept acceptRequest" data-row=@counter data-id="@request.User_id">Accept</a>
-                                                </td>
-                                                <td>
-                                                    <a href="#" class="btnDecline declineRequest" data-row=@counter data-id="@request.User_id">Decline</a>
-                                                </td>
-                                            </tr>
-
-                                            counter++;
-                                        }
-                                    </table>
-                                </div>
-                            }
-                        }
-
-                    </div>
-                </div>
-            }
-            </div>
+        }
+    </div>-->
 </div>
+
 
 
 @section Scripts {
@@ -174,7 +200,96 @@
     <script>
         $(document).ready(function () {
 
-      
+
+             /*
+           * Load Feed
+           */
+
+            var currentFeedPageNumber = 1;
+            loadFeed(currentFeedPageNumber);
+
+            $(window).scroll(function () {
+                if ($(window).scrollTop() == $(document).height() - $(window).height()) {
+                    currentFeedPageNumber += 1;
+                    loadFeed(currentFeedPageNumber);
+                }
+            });
+
+            function loadFeed(currentPage) {
+
+                var userID = '@ViewBag.UserID';
+
+                $.ajax({
+                    url: '/FriendService.asmx/GetRecipes',
+                    method: 'post',
+                    data: { pageNumber: currentPage, pageSize: 3, userID: userID },
+                    dataType: 'json',
+                    success: function (data) {
+                        var feedTable = $('#tblFeed tbody');
+
+                        $(data).each(function (index, post) {
+
+                            //var counter = 0;
+                            var rating = post.Rating;
+                            console.log(post.User_id);
+                            var tr = '<tr>' +
+                                '<td>' +
+                                '<div class="card border-secondary postCard mb-3"><div class="card-header postCardHeader">By: <a href ="/' + post.Username + '" class=postUserName data-id="' + post.User_id + '">' + post.Username + '</a><span class=postCreated>' + post.Created.toString() + '</span></div><div class="card-body"><h4 class="card-title"><img src="/Uploads/' + post.RecipeID + '.jpg" class="postRecipePic img-thumbnail" /><br/>' + post.RecipeName + '</h4><p class="card-text"><br/>' + post.Description + '</p>' +
+                                '<a href="#" class="btn btn-sm btn-success viewRecipe" data-id="' + post.RecipeID + '" >View Recipe</a> ';
+
+
+                                // rating
+                                //'<div class="ratingDiv post.RecipeID" data-recipeid=' + post.RecipeID + '>';
+                                //if(rating >=1) {
+                                //   tr += '<img src="/Images/yellowstar.png" class="ratingStar" data-value="1" />';
+                                //} else {
+                                //   tr += '<img src="/Images/whitestar.png" class="ratingStar" data-value="1" />';
+                                //}
+                                //if (rating >= 2) {
+                                //    tr += '<img src="/Images/yellowstar.png" class="ratingStar" data-value="2" />';
+                                //} else {
+                                //    tr += '<img src="/Images/whitestar.png" class="ratingStar" data-value="2" />';
+                                //}
+                                //if (rating >= 3) {
+                                //    tr += '<img src="/Images/yellowstar.png" class="ratingStar" data-value="3" />';
+                                //} else {
+                                //    tr += '<img src="/Images/whitestar.png" class="ratingStar" data-value="3" />';
+                                //} if (rating >= 4) {
+                                //    tr += '<img src="/Images/yellowstar.png" class="ratingStar" data-value="4" />';
+                                //} else {
+                                //    tr += '<img src="/Images/whitestar.png" class="ratingStar" data-value="4" />';
+                                //} if (rating >= 4) {
+                                //    tr += '<img src="/Images/yellowstar.png" class="ratingStar" data-value="5" />';
+                                //} else {
+                                //    tr += '<img src="/Images/whitestar.png" class="ratingStar" data-value="5" />';
+                                //}
+
+                                //tr += post.NumRates;
+
+
+                            '</div>';
+
+
+                                    feedTable.append(tr);
+
+                        });
+                    }
+                });
+            }
+
+             /*
+             *  Click on Recipe to View
+             */
+            $("body").on("click", ".viewRecipe", function (e) {
+                e.preventDefault();
+                var $this = $(this);
+
+                var recipeID = $this.data("id");
+                var userID = @ViewBag.UserID;
+                var url = "../recipes/ViewRecipe?recipeID=";
+                window.location.href = url + recipeID;
+            });
+
             /*
            * Load Friends
            */

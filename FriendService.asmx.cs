@@ -23,9 +23,18 @@ namespace RecipeForSuccess_mvc
     {
 
         [WebMethod]
+        public void SearchRecipes(int pageNumber, int pageSize, string searchVal)
+        {
+            RecipesService recipesService = new RecipesService();
+            List<RecipeVM> listRecipes = recipesService.SearchRecipesByTerm(pageNumber, pageSize, searchVal);
+            
+            JavaScriptSerializer js = new JavaScriptSerializer();
+            Context.Response.Write(js.Serialize(listRecipes));
+        }
+
+        [WebMethod]
         public void GetRecipes(int pageNumber, int pageSize, int userID)
         {
-
             List<UserRecipeVM> listUserRecipes = new List<UserRecipeVM>();
             FriendsService friendsService = new FriendsService();
             UsersService usersService = new UsersService();

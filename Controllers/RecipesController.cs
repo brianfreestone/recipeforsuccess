@@ -25,22 +25,26 @@ namespace RecipeForSuccess_mvc.Controllers
 
         // GET: Recipes
         [UserAuthorizationFilterAttribute]
-        public ActionResult Index()
+        public ActionResult Index(int userID = 0)
         {
+
             string userName = User.Identity.Name;
             ViewBag.Username = userName;
-
-            int user_id = usersService.GetUserIDByUserName(userName);
-            ViewBag.UserID = user_id;
+            if (userID == 0)
+            {
+                userID = usersService.GetUserIDByUserName(userName);
+            }
+          
+            ViewBag.UserID = userID;
 
             // get friend request count
-            var friendRequestCount = friendsService.GetFriendRequestCount(user_id);
+            var friendRequestCount = friendsService.GetFriendRequestCount(userID);
             if (friendRequestCount > 0)
             {
                 ViewBag.FriendRequestCount = friendRequestCount;
             }
 
-            List<RecipeVM> recipeVMs = recipesService.GetRecipesByUserID(user_id);
+            List<RecipeVM> recipeVMs = recipesService.GetRecipesByUserID(userID);
 
             return View(recipeVMs);
         }
@@ -133,15 +137,19 @@ namespace RecipeForSuccess_mvc.Controllers
             // todo check if recipe exists
             if (recipesService.RecipeExistsByRecipeID(recipeID))
             {
-                // check if user is allowed to look at recipe
-                if (recipesService.IsFriendsRecipeIDs(recipeID, userID))
-                {
+                //// check if user is allowed to look at recipe
+                //if (recipesService.IsFriendsRecipeIDs(recipeID, userID))
+                //{
 
                     RecipeViewVM recipe = recipesService.GetRecipeByRecipeID(recipeID);
                     recipe.recipe_id = recipeID;
-                    recipe.Username = usersService.GetUserFullNameByUserID((int)recipe.User_id);
+                    recipe.Username = usersService.GetUsernameByUserID((int)recipe.User_id);
+                    recipe.UserFullName = usersService.GetUserFullNameByUserName(recipe.Username);
+
+                    List<CommentVM> comments = recipesService.GetCommentsByRecipeID(recipeID);
+                ViewBag.Comments = comments;
                     return View(recipe);
-                }
+                //}
             }
             return RedirectToAction("Index");
         }
@@ -190,6 +198,11 @@ namespace RecipeForSuccess_mvc.Controllers
         public void UpdateFavorite(int recipeID, int userID, string favoriteType)
         {
             recipesService.UpdateFavorite(recipeID, userID, favoriteType);
+        }
+
+        public void AddRating(int rID, int uID, int rating)
+        { 
+                
         }
 
 

@@ -138,17 +138,136 @@ namespace RecipeForSuccess_mvc.Controllers
 
         }
 
-        [Authorize]
-        [UserAuthorizationFilterAttribute]
-        public ActionResult Username(string username = "")
+        [HttpGet]
+        public ActionResult ForgotPassword()
+        {
+            ForgotPasswordVM forgot = new ForgotPasswordVM();
+            return View(forgot);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult ForgotPassword(ForgotPasswordVM forgot)
         {
 
-            // get logged in users userid
-            //int user_id = Convert.ToInt32(Session["CurrentUserID"]);
+            int userID = 0;
+            if (Session["fUID"] != null)
+            {
+                userID = Convert.ToInt32(Session["fUID"]);
+            }
 
-            //string user = Session["CurrentUserName"].ToString();
+            if (forgot.Code == null)
+            {
+
+                string email = forgot.EmailAddress;
+                string code = usersService.ResetPasswordGetCode(email);
+
+                if (code != "")
+                {
+                    TempData["Success"] = "Check your email for the code";
+
+                    userID = (int)usersService.GetUserByEmail(email).User_id;
+                    forgot.UserID = userID;
+
+                    Session["fUID"] = userID;
+
+                    string encryptedCode = SHA256HashGenerator.GenerateHash(code);
+
+                    Session["ec"] = encryptedCode;
+                    ViewBag.CodeSuccess = "true";
+                    return View(forgot);
+                }
+                else
+                {
+                    ViewBag.CodeSuccess = "false";
+                    TempData["Error"] = "There was an error, please re-enter the code";
+                    return View(forgot);
+
+                    //return RedirectToAction("ForgotPassword", "",);
+                }
+            }
+            else
+            {
+                //compare the code
+                string encryptedCode = SHA256HashGenerator.GenerateHash(forgot.Code);
+                if (Session["ec"].ToString() == encryptedCode)
+                {
+                    return RedirectToAction("ResetPassword");
+                }
+                else
+                {
+                    ViewBag.CodeSuccess = "true";
+                    TempData["Error"] = "There was an error, please re-enter your the code";
+                    return View(forgot);
+                    //return RedirectToAction("ForgotPassword");
+                }
+            }
+
+        }
+
+        [HttpGet]
+        public ActionResult ResetPassword()
+        {
+            if (Session["fUID"] != null)
+            {
+
+                EditUserPasswordVM reset = new EditUserPasswordVM();
+                reset.User_id = Convert.ToInt32(Session["fUID"]);
+                return View(reset);
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult ResetPassword(EditUserPasswordVM resetVM)
+        {
+            if (ModelState.IsValid)
+            {
+
+                // check old password
+                if (!usersService.ExistingPasswordMatches(resetVM.User_id, resetVM.OldPassword))
+                {
+                    ModelState.AddModelError("Password", "Password does not match existing password");
+                    return View();
+                }
+
+                if (!usersService.PasswordExists(resetVM.Password, resetVM.User_id))
+                {
+                    usersService.ChangeUserPassword(resetVM);
+
+                    TempData["Success"] = "Password successfully updated!";
+                    Session["fUID"] = null;
+                    Session["ec"] = null;
+                    return RedirectToAction("login", "Home");
+                }
+                else
+                {
+                    ModelState.AddModelError("Password", "Password cannot be a previously used password");
+                    return View();
+                }
+
+
+            }
+            else
+            {
+                ModelState.AddModelError("pasword", "Passwords must match");
+                return View(resetVM);
+            }
+
+
+        }
+
+
+        [HttpGet]
+        public ActionResult ViewFriends(int userID)
+        {
 
             string user = User.Identity.Name;
+            string username = usersService.GetUsernameByUserID(userID);
 
             // get logged in user's user_id
             int user_id = usersService.GetUserIDByUserName(user);
@@ -166,7 +285,6 @@ namespace RecipeForSuccess_mvc.Controllers
 
             // get viewint's user_id
             int viewing_id = usersService.GetUserIDByUserName(username);
-            //Session["ViewingID"] = viewing_id;
             ViewBag.ViewingID = viewing_id;
 
             string userType = "guest";
@@ -176,12 +294,11 @@ namespace RecipeForSuccess_mvc.Controllers
             }
 
             ViewBag.UserType = userType;
-            //Session["UserType"] = userType;
 
             // check if they are friends
             if (userType == "guest")
             {
-
+                ViewBag.UserID = viewing_id;
                 string areFriends = friendsService.AreFriends(user_id, viewing_id);
 
                 switch (areFriends)
@@ -200,7 +317,7 @@ namespace RecipeForSuccess_mvc.Controllers
             if (friendRequestCount > 0)
             {
                 ViewBag.FriendRequestCount = friendRequestCount;
-           
+
                 List<UserVM> listRequests = friendsService.GetFriendRequestsByUserID(user_id);
                 ViewBag.ListRequests = listRequests;
             }
@@ -209,6 +326,84 @@ namespace RecipeForSuccess_mvc.Controllers
             int friendCount = friendsService.GetFriendCount(viewing_id);
 
             ViewBag.FriendCount = friendCount;
+
+
+
+            return View();
+        }
+
+        [Authorize]
+        [UserAuthorizationFilterAttribute]
+        public ActionResult Username(string username = "")
+        {
+            string user = User.Identity.Name;
+            // check that username exists
+
+            if (usersService.UserExistsByUsername(username))
+            {
+
+                // get logged in user's user_id
+                int user_id = usersService.GetUserIDByUserName(user);
+                ViewBag.UserID = user_id;
+
+                // get logged in user's username
+                ViewBag.UserName = user;
+
+                // viewbag user's full name
+                ViewBag.UserFullName = usersService.GetUserFullNameByUserID(user_id);
+
+                // get viewing's full name
+                ViewBag.ViewingFullName = usersService.GetUserFullNameByUserName(username);
+                ViewBag.ViewingUserName = username;
+
+                // get viewint's user_id
+                int viewing_id = usersService.GetUserIDByUserName(username);
+                ViewBag.ViewingID = viewing_id;
+
+                string userType = "guest";
+                if (username.Equals(user))
+                {
+                    userType = "owner";
+                }
+
+                ViewBag.UserType = userType;
+
+                // check if they are friends
+                if (userType == "guest")
+                {
+                    ViewBag.UserID = viewing_id;
+                    string areFriends = friendsService.AreFriends(user_id, viewing_id);
+
+                    switch (areFriends)
+                    {
+                        case "none":
+                            ViewBag.NotFriends = "True";
+                            break;
+                        case "pending":
+                            ViewBag.NotFriends = "Pending";
+                            break;
+                    }
+                }
+
+                // get friend request count
+                var friendRequestCount = friendsService.GetFriendRequestCount(Convert.ToInt32(user_id));
+                if (friendRequestCount > 0)
+                {
+                    ViewBag.FriendRequestCount = friendRequestCount;
+
+                    List<UserVM> listRequests = friendsService.GetFriendRequestsByUserID(user_id);
+                    ViewBag.ListRequests = listRequests;
+                }
+
+                //get count of friends
+                int friendCount = friendsService.GetFriendCount(viewing_id);
+
+                ViewBag.FriendCount = friendCount;
+            }
+            else // user doesn't exist
+            {
+                return RedirectToAction("Username", new { username = user });
+            }
 
             return View();
         }

@@ -464,6 +464,9 @@
     <Content Include="Views\Recipes\AddRecipe.cshtml" />
     <Content Include="Views\Shared\_VoteNowPartial.cshtml" />
     <Content Include="Views\Recipes\ViewRecipe.cshtml" />
+    <Content Include="Views\Account\ViewFriends.cshtml" />
+    <Content Include="Views\Account\ForgotPassword.cshtml" />
+    <Content Include="Views\Account\ResetPassword.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
