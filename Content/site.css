@@ -512,6 +512,10 @@ span.fa-heart-o {
  Recipe
  */
 
+#authorName{
+    font-size:14px;
+}
+
 .authorImage {
     width: 75px;
 }
@@ -520,9 +524,11 @@ span.fa-heart-o {
     font-weight: 800;
 }
 
-#authorName {
-    color: gray;
-    margin-left: 15px;
+.author-profile {
+    color: dodgerblue;
+    margin-left: 5px;
+    font-size: 14px;
+    font-weight:bold;
 }
 
 #recipeImage {
@@ -578,7 +584,9 @@ span.fa-heart-o {
 }
 
 .commentsHeader {
-    width: 250px;
+    width: 100%;
+    border-bottom:1px solid gray;
+    margin-bottom:25px;
 }
 
 .commentsHead {
@@ -587,9 +595,28 @@ span.fa-heart-o {
 .commentsBody {
     font-size: 14px;
 }
+.comment-name{
+    font-weight:bold;
+    font-size:16px;
+    margin-bottom:6px;
+}
+
+.comment-date {
+    font-size: 12px;
+    color: rgba(0,0,0,0.65);
+    margin-bottom: 10px;
+}
+
+.comment-text {
+    font-size: 14px;
+    margin-bottom:10px;
+}
 
 .comment {
     font-size:14px;
+    border-bottom: 1px solid #eddede;
+    margin-bottom: 18px;
+    padding-bottom: 10px;
 }
 
 .commentsLeave {
@@ -597,8 +624,13 @@ span.fa-heart-o {
     margin-top: 5px;
 }
 
-.userNameContainer{
-    margin-left:160px;
+
+#addComment {
+    font-size: 14px;
+}
+
+.userNameContainer {
+    margin-left: 160px;
 }
 
 .sidenav {

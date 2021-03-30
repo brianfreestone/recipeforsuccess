@@ -71,7 +71,7 @@
                 <td>
                     @if (item.Favorite == true)
                     {
-                        <a class="favorite" href="#" data-rid="@item.recipe_id" data-uid="@item.User_id">  <span class="fa fa-heart fa-star"></span></a>
+                        <a class="favorite" href="#" data-rid="@item.recipe_id" data-uid="@item.User_id">  <span class="fa fa-heart"></span></a>
                     }
                     else
                     {
@@ -80,11 +80,11 @@
 
                 </td>
                 <td>
-                  class="rating"   ☆ data-id="1" ☆ data-id ="2" ☆ ☆ ☆
+                  
                 </td>
                 <td>
                     @*@Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |*@
-                    @Html.ActionLink("Details", "ViewRecipe", new { recipeID = item.recipe_id }) |
+                    @Html.ActionLink("Details", "ViewRecipe", new { recipeID = item.recipe_id })
                     @*@Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })*@
                 </td>
             </tr>
@@ -130,7 +130,6 @@
 
                 var recipeID = $this.data("rid");
                 var userID = $this.data("uid");
-                var rating = $this.data("id");
 
                 console.log("recipeID=" + recipeID);
                 console.log("userID=" + userID);
@@ -147,6 +146,8 @@
                     }
                 });
             });
+
+
 
             /*
             * Live Search Recipe

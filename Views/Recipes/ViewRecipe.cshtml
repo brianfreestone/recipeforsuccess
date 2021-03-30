@@ -6,80 +6,130 @@
 
 <div class="mainBody mt-5">
     <div class="container">
-        <div class="card border-primary mb-3 border-light recipeCard">
+        <div class="row">
 
-            <div class="card-header">
-                <h3>@Html.DisplayFor(model => model.Name)</h3>
-            </div>
-            <div class="card-body">
+            <div class="card border-primary mb-3 border-light recipeCard">
 
-                <div class="recipe-summary">
-                    <p id="summary">@Html.DisplayFor(model => model.Description)</p>
+                <div class="card-header">
+                    <h3>@Html.DisplayFor(model => model.Name)</h3>
                 </div>
+                <div class="card-body">
 
-                <div class="row">
-                    <div class="col">
-                        <div class="recipeImage mt-3">
-                            <img src="~/Uploads/@(Model.recipe_id).jpg" id="recipeImage" class="img-thumbnail rounded">
-                        </div>
-                        <div class="recipeMealType badge badge-info mb-2 mt-2">
-                            @Html.DisplayFor(model => model.Meal_type_name)
-                        </div>
-                        <div class="author">
-                            <a href="/@Model.Username" class="author-profile"><img src="~/Uploads/Users/@(Model.recipe_id).jpg" class="img-thumbnail authorImage" /></a>
-                            <span id="authorName">By <a href="/@Model.Username" class="author-profile">@Model.UserFullName</a></span>
-                        </div>
+                    <div class="recipe-summary">
+                        <p id="summary">@Html.DisplayFor(model => model.Description)</p>
                     </div>
-                    <div class="col">
-                        <div class="ingredientsBody mt-2">
-                            <h5>Ingredients</h5>
-                            <div class="ingredients mt-2">
-                                @foreach (var item in Model.Ingredients)
-                                {
-                                    <div class="ingredient">@item.IngredientName</div>
-                                }
+
+                    <div class="row">
+                        <div class="col">
+                            <div class="recipeImage mt-3">
+                                <img src="~/Uploads/@(Model.recipe_id).jpg" id="recipeImage" class="img-thumbnail rounded">
+                            </div>
+                            <div class="recipeMealType badge badge-info mb-2 mt-2">
+                                @Html.DisplayFor(model => model.Meal_type_name)
+                            </div>
+                            <div class="author">
+                                <a href="/@Model.Username" class="author-profile"><img src="~/Uploads/Users/@(Model.recipe_id).jpg" class="img-thumbnail authorImage" /></a>
+                                <span id="authorName">By <a href="/@Model.Username" class="author-profile">@Model.UserFullName</a></span>
                             </div>
                         </div>
-                        <div class="instructionsBody mt-4">
-                            <h5>Directions</h5>
-                            <div class="instructions mt-2">
-                                @{
-                                    int counter = 1;
-                                    foreach (var item in Model.Instructions)
+                        <div class="col">
+                            <div class="ingredientsBody mt-2">
+                                <h5>Ingredients</h5>
+                                <div class="ingredients mt-2">
+                                    @foreach (var item in Model.Ingredients)
                                     {
-                                        <div class="instruction">
-                                            <div class="instructionStep">Step @counter</div>
-                                            <div class="instructionText">
-                                                @item.InstructionName
-                                            </div>
-                                        </div>
-                                        counter++;
+                                        <div class="ingredient">@item.IngredientName</div>
                                     }
-                                }
+                                </div>
+                            </div>
+                            <div class="instructionsBody mt-4">
+                                <h5>Directions</h5>
+                                <div class="instructions mt-2">
+                                    @{
+                                        int counter = 1;
+                                        foreach (var item in Model.Instructions)
+                                        {
+                                            <div class="instruction">
+                                                <div class="instructionStep">Step @counter</div>
+                                                <div class="instructionText">
+                                                    @item.InstructionName
+                                                </div>
+                                            </div>
+                                            counter++;
+                                        }
+                                    }
 
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="row">
+                <div class="row comments">
                     <div class="commentsHeader">Comments</div>
-                    @foreach (var comment in ViewBag.Comments)
-                    {
-                        <div class="comment-body">
+                </div>
+                @foreach (var comment in ViewBag.Comments)
+                {
 
-                            <div class="comment">@comment.Comment</div>
-                            <div class="comment-name">@comment.UserFullName</div>
+                    <div class="comment">
+                        <div class="comment-name">
+                            <a href="/@comment.Username" class="comment-name">@comment.UserFullName</a>
                         </div>
-                    }
+                        <div class="comment-date">
+
+                            <span>@comment.CommentDate</span>
+                        </div>
+                        <span class="comment-text">@comment.Comment</span>
+
+                    </div>
+
+                }
+                <div class="row newComment">
+                    <div class="col">
+                        <textarea id="addComment" cols="40" rows="5"></textarea>
+                    </div>
+                    <div class="col">
+                        <a class="btn btn-primary btn-sm" data-rid="@Model.recipe_id" id="btnAddComment">Add Comment</a>
+                    </div>
+
                 </div>
             </div>
         </div>
-
-
-
     </div>
+
+
+
 </div>
+
 <p>
     @*@Html.ActionLink("Edit", "Edit", new { /* id = Model.PrimaryKey */ }) |
         @Html.ActionLink("Back to List", "Index")*@
 </p>
+@section Scripts {
+
+    <script src="~/Scripts/jquery.signalR-2.2.2.min.js"></script>
+    <script src="/signalr/hubs"></script>
+    <script>
+
+$(document).ready(function () {
+
+            // add comment
+
+            $("#btnAddComment").on("click", function () {
+
+                var $this = $(this);
+                var recipeID = $this.data("rid");
+                var comment = $('#addComment').val();
+                var url = "/Recipes/AddComment"
+                $.post(url, { recipeID: recipeID, comment: comment }, function (data) {
+
+                }).done(function () {
+                    location.reload();
+                });
+
+            });
+
+        });
+
+    </script>
+
+}

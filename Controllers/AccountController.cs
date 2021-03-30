@@ -332,6 +332,7 @@ namespace RecipeForSuccess_mvc.Controllers
             return View();
         }
 
+        [ValidateInput(false)]
         [Authorize]
         [UserAuthorizationFilterAttribute]
         public ActionResult Username(string username = "")

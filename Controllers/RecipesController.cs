@@ -34,7 +34,7 @@ namespace RecipeForSuccess_mvc.Controllers
             {
                 userID = usersService.GetUserIDByUserName(userName);
             }
-          
+
             ViewBag.UserID = userID;
 
             // get friend request count
@@ -65,6 +65,7 @@ namespace RecipeForSuccess_mvc.Controllers
         }
 
         [HttpPost]
+
         public ActionResult AddRecipe(RecipeVM recipeVM, HttpPostedFileBase file)
         {
             //int recipeID = 0;
@@ -129,6 +130,7 @@ namespace RecipeForSuccess_mvc.Controllers
         }
 
         [HttpGet]
+        [UserAuthorizationFilterAttribute]
         public ActionResult ViewRecipe(int recipeID)
         {
             string userName = User.Identity.Name;
@@ -141,14 +143,14 @@ namespace RecipeForSuccess_mvc.Controllers
                 //if (recipesService.IsFriendsRecipeIDs(recipeID, userID))
                 //{
 
-                    RecipeViewVM recipe = recipesService.GetRecipeByRecipeID(recipeID);
-                    recipe.recipe_id = recipeID;
-                    recipe.Username = usersService.GetUsernameByUserID((int)recipe.User_id);
-                    recipe.UserFullName = usersService.GetUserFullNameByUserName(recipe.Username);
+                RecipeViewVM recipe = recipesService.GetRecipeByRecipeID(recipeID);
+                recipe.recipe_id = recipeID;
+                recipe.Username = usersService.GetUsernameByUserID((int)recipe.User_id);
+                recipe.UserFullName = usersService.GetUserFullNameByUserName(recipe.Username);
 
-                    List<CommentVM> comments = recipesService.GetCommentsByRecipeID(recipeID);
+                List<CommentVM> comments = recipesService.GetCommentsByRecipeID(recipeID);
                 ViewBag.Comments = comments;
-                    return View(recipe);
+                return View(recipe);
                 //}
             }
             return RedirectToAction("Index");
@@ -200,9 +202,29 @@ namespace RecipeForSuccess_mvc.Controllers
             recipesService.UpdateFavorite(recipeID, userID, favoriteType);
         }
 
-        public void AddRating(int rID, int uID, int rating)
-        { 
-                
+        [HttpPost]
+        public void AddRating(int recipeID, int userID, int rating)
+        {
+
+        }
+
+        [HttpPost]
+        public void AddComment(int recipeID, string comment)
+        {
+            if (comment != "")
+            {
+
+            string username = User.Identity.Name;
+            int userID = usersService.GetUserIDByUserName(username);
+
+            recipesService.AddComment(recipeID, userID, comment);
+
+            }
+            else
+            {
+                TempData["Error"] = "Please enter a comment";
+            }
+            
         }
 
 
