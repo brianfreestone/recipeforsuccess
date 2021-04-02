@@ -5,7 +5,7 @@
 }
 
 .change-form {
-    max-width: 400px;
+    max-width: 500px;
     margin: auto;
     padding-top: 50px;
 }
@@ -137,10 +137,10 @@ li.friendRequestNotificationLi a {
         padding: 0;
         /*line-height: 0;*/
     }
-        /*  #tblFriends tr td:first-child,
+          #tblFriends tr td:first-child,
         #tblRequests tr td:first-child {
             width: 100%;
-        }*/
+        }
 
         #tblFriends tr td, #tblRequests tr td {
            font-size:small;
@@ -229,6 +229,7 @@ li.friendRequestNotificationLi a {
 
 .clickAddFriend, .clickViewFriend {
     color: black;
+    width:
 }
 
 
@@ -532,7 +533,7 @@ span.fa-heart-o {
 }
 
 #recipeImage {
-    width: 500px;
+    width: 300px;
 }
 
 .recipeMealType {
@@ -540,7 +541,16 @@ span.fa-heart-o {
 }
 
 .recipeCard{
-    max-width:600px;
+    max-width:800px;
+}
+
+.dot {
+    height: 7px;
+    width: 7px;
+    margin-top: 3px;
+    background-color: #bbb;
+    border-radius: 50%;
+    display: inline-block
 }
 
 #stars {
@@ -576,6 +586,10 @@ span.fa-heart-o {
 .recipeReview {
     width: 220px;
     margin-bottom: 25px;
+}
+
+#btnAddComment{
+    color:white;
 }
 
 .commenticon {

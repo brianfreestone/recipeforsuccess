@@ -28,11 +28,18 @@ namespace RecipeForSuccess_mvc.Controllers
         public ActionResult Index(int userID = 0)
         {
 
+
             string userName = User.Identity.Name;
             ViewBag.Username = userName;
-            if (userID == 0)
+            int loggedInUserID = usersService.GetUserIDByUserName(userName);
+            if (userID == 0 || userID == loggedInUserID)
             {
-                userID = usersService.GetUserIDByUserName(userName);
+                ViewBag.UserType = "owner";
+                userID = loggedInUserID;
+            }
+            else
+            {
+                ViewBag.UserType = "guest";
             }
 
             ViewBag.UserID = userID;
@@ -59,13 +66,11 @@ namespace RecipeForSuccess_mvc.Controllers
             ViewBag.MealTypes = mealTypeVMs;
 
             //RecipeVM addRecipeVM = new AddRecipeVM();
-
             return View();
 
         }
 
         [HttpPost]
-
         public ActionResult AddRecipe(RecipeVM recipeVM, HttpPostedFileBase file)
         {
             //int recipeID = 0;
@@ -74,14 +79,11 @@ namespace RecipeForSuccess_mvc.Controllers
                 int user_id = Convert.ToInt32(Session["CurrentUserID"]);
                 recipeVM.User_id = user_id;
 
-
-
                 // check if file was uploaded
                 if (file != null && file.ContentLength > 0)
                 {
                     // get extension
                     string ext = file.ContentType.ToLower();
-
 
                     // verify extension
                     if (ext != "image/jpg" &&
@@ -91,7 +93,7 @@ namespace RecipeForSuccess_mvc.Controllers
                         ext != "image/x-png" &&
                         ext != "image/png")
                     {
-                        ModelState.AddModelError("", "The image was not uploaded - wong image extension");
+                        ModelState.AddModelError("", "The image was not uploaded - wrong image extension");
                         return View("AddRecipe", recipeVM);
                     }
 
@@ -109,7 +111,10 @@ namespace RecipeForSuccess_mvc.Controllers
                 var path = string.Format("{0}\\{1}", uploadsDirectory, imageName);
 
                 // save image
-                file.SaveAs(path);
+                if (file != null && file.ContentLength > 0)
+                {
+                    file.SaveAs(path);
+                }
 
                 TempData["Success"] = "Recipe Added";
             }
@@ -202,10 +207,15 @@ namespace RecipeForSuccess_mvc.Controllers
             recipesService.UpdateFavorite(recipeID, userID, favoriteType);
         }
 
+
+
+        //Kate Stuff
+        
+     
         [HttpPost]
         public void AddRating(int recipeID, int userID, int rating)
         {
-
+            recipesService.AddRating(recipeID, userID, rating);
         }
 
         [HttpPost]
@@ -214,17 +224,17 @@ namespace RecipeForSuccess_mvc.Controllers
             if (comment != "")
             {
 
-            string username = User.Identity.Name;
-            int userID = usersService.GetUserIDByUserName(username);
+                string username = User.Identity.Name;
+                int userID = usersService.GetUserIDByUserName(username);
 
-            recipesService.AddComment(recipeID, userID, comment);
+                recipesService.AddComment(recipeID, userID, comment);
 
             }
             else
             {
                 TempData["Error"] = "Please enter a comment";
             }
-            
+
         }
 
 

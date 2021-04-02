@@ -7,98 +7,106 @@
 <div class="mainBody mt-5">
     <div class="container">
         <div class="row">
+            <div class="col-12">
 
-            <div class="card border-primary mb-3 border-light recipeCard">
+                <div class="card border-secondary mb-3 recipeCard">
 
-                <div class="card-header">
-                    <h3>@Html.DisplayFor(model => model.Name)</h3>
-                </div>
-                <div class="card-body">
-
-                    <div class="recipe-summary">
-                        <p id="summary">@Html.DisplayFor(model => model.Description)</p>
+                    <div class="card-header">
+                        <h3>@Html.DisplayFor(model => model.Name)</h3>
                     </div>
+                    <div class="card-body">
 
-                    <div class="row">
-                        <div class="col">
-                            <div class="recipeImage mt-3">
-                                <img src="~/Uploads/@(Model.recipe_id).jpg" id="recipeImage" class="img-thumbnail rounded">
-                            </div>
-                            <div class="recipeMealType badge badge-info mb-2 mt-2">
-                                @Html.DisplayFor(model => model.Meal_type_name)
-                            </div>
-                            <div class="author">
-                                <a href="/@Model.Username" class="author-profile"><img src="~/Uploads/Users/@(Model.recipe_id).jpg" class="img-thumbnail authorImage" /></a>
-                                <span id="authorName">By <a href="/@Model.Username" class="author-profile">@Model.UserFullName</a></span>
-                            </div>
+                        <div class="recipe-summary">
+                            <h5 class="card-title">@Html.DisplayFor(model => model.Description)</h5>
                         </div>
-                        <div class="col">
-                            <div class="ingredientsBody mt-2">
-                                <h5>Ingredients</h5>
-                                <div class="ingredients mt-2">
-                                    @foreach (var item in Model.Ingredients)
+                        <!--Kate Stuff-->
+                        @*<div class ="ratingDiv"> Test
+                            <a class="ratingStar" href="#" data-rid="@Model.recipe_id" id="StarOne"<span class="fa fa-star">☆</span></a>
+                            <a class="ratingStar" href="#" data-rid="@Model.recipe_id" id="StarTwo"<span class="fa fa-star">☆</span></a>
+                            <a class="ratingStar" href="#" data-rid="@Model.recipe_id" id="StarThree"<span class="fa fa-star">☆</span></a>
+                            <a class="ratingStar" href="#" data-rid="@Model.recipe_id" id="StarFour"<span class="fa fa-star">☆</span></a>
+                            <a class="ratingStar" href="#" data-rid="@Model.recipe_id" id="StarFive"<span class="fa fa-star">☆</span></a>
+
+                        </div>*@
+                        <div class="author">
+                            @*<a href="/@Model.Username" class="author-profile"><img src="~/Uploads/Users/@(Model.recipe_id).jpg" class="img-thumbnail authorImage" /></a>*@
+                            <h6 class="card-subtitle text-muted" id="authorName">Recipe By: <a href="/@Model.Username" class="author-profile">@Model.UserFullName</a></h6>
+                        </div>
+
+                        <div class="recipeImage mt-3">
+                            <img src="~/Uploads/@(Model.recipe_id).jpg" id="recipeImage" class="img-thumbnail rounded">
+                        </div>
+                        <div class="recipeMealType badge badge-info mb-2 mt-2">
+                            @Html.DisplayFor(model => model.Meal_type_name)
+                        </div>
+
+
+                        <div class="ingredientsBody mt-2">
+                            <h5>Ingredients</h5>
+                            <ul class="list-group list-group-flush mt-2">
+                                @foreach (var item in Model.Ingredients)
+                                {
+                                    <li class="list-group-item">@item.IngredientName</li>
+                                }
+                            </ul>
+                        </div>
+                        <div class="instructionsBody mt-4">
+                            <h5>Directions</h5>
+                            <div class="instructions mt-2">
+                                @{
+                                    int counter = 1;
+                                    foreach (var item in Model.Instructions)
                                     {
-                                        <div class="ingredient">@item.IngredientName</div>
-                                    }
-                                </div>
-                            </div>
-                            <div class="instructionsBody mt-4">
-                                <h5>Directions</h5>
-                                <div class="instructions mt-2">
-                                    @{
-                                        int counter = 1;
-                                        foreach (var item in Model.Instructions)
-                                        {
-                                            <div class="instruction">
-                                                <div class="instructionStep">Step @counter</div>
-                                                <div class="instructionText">
-                                                    @item.InstructionName
-                                                </div>
+                                        <div class="instruction">
+                                            <div class="instructionStep">Step @counter</div>
+                                            <div class="instructionText">
+                                                @item.InstructionName
                                             </div>
-                                            counter++;
-                                        }
+                                        </div>
+                                        counter++;
                                     }
+                                }
 
-                                </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-                <div class="row comments">
-                    <div class="commentsHeader">Comments</div>
-                </div>
-                @foreach (var comment in ViewBag.Comments)
-                {
 
-                    <div class="comment">
-                        <div class="comment-name">
-                            <a href="/@comment.Username" class="comment-name">@comment.UserFullName</a>
+                    </div>
+                    <div class="card-footer">
+
+                        <div class="row newComment">
+                            <div class="col">
+                                <textarea id="addComment" cols="40" rows="3"></textarea>
+                            </div>
+                            <div class="col">
+                                <a class="btn btn-info" data-rid="@Model.recipe_id" id="btnAddComment">Comment</a>
+                            </div>
+
                         </div>
-                        <div class="comment-date">
+                        @foreach (var comment in ViewBag.Comments)
+                        {
+                            <div class="commented-section mt-2">
+                                <div class="d-flex flex-row align-items-center commented-user">
+                                    <h5 class="mr-2"><a href="/@comment.Username" class="comment-name">@comment.UserFullName</a></h5>
+                                    <span class="dot mb-1 mr-1"></span>
+                                    <span class="comment-date pt-2">
 
-                            <span>@comment.CommentDate</span>
-                        </div>
-                        <span class="comment-text">@comment.Comment</span>
+                                        <span>@comment.CommentDate</span>
+                                    </span>
+                                </div>
+                            </div>
+                            <span class="comment-text">@comment.Comment</span>
+                        }
 
                     </div>
-
-                }
-                <div class="row newComment">
-                    <div class="col">
-                        <textarea id="addComment" cols="40" rows="5"></textarea>
-                    </div>
-                    <div class="col">
-                        <a class="btn btn-primary btn-sm" data-rid="@Model.recipe_id" id="btnAddComment">Add Comment</a>
-                    </div>
-
                 </div>
             </div>
         </div>
     </div>
-
-
-
 </div>
+
+
+
+    </div>
 
 <p>
     @*@Html.ActionLink("Edit", "Edit", new { /* id = Model.PrimaryKey */ }) |
@@ -110,7 +118,7 @@
     <script src="/signalr/hubs"></script>
     <script>
 
-$(document).ready(function () {
+        $(document).ready(function () {
 
             // add comment
 

@@ -8,10 +8,12 @@
 
     <h2>My Recipes</h2>
     <div class="row">
-
-        <p class="float-left">
-            @Html.ActionLink("Create New", "AddRecipe", new object { }, new { @class = "btn btn-primary", style = "margin-top:11px; margin-right:5px;" })
-        </p>
+        @if (ViewBag.UserType == "owner")
+        {
+            <p class="float-left">
+                @Html.ActionLink("Create New", "AddRecipe", new object { }, new { @class = "btn btn-primary", style = "margin-top:11px; margin-right:5px;" })
+            </p>
+        }
         <ul class="nav navbar-nav float-right">
             <li class="recipeLiveSearchLi mainSearchLi">
                 <input id="recipeSearchText" class="searchText form-control" type="text" placeholder="Search Recipes" />
@@ -42,7 +44,7 @@
             <th>
                 Rating
             </th>
-         
+
 
             <th></th>
         </tr>
@@ -61,7 +63,7 @@
                     @Html.DisplayFor(modelItem => item.Created)
                 </td>
                 <td class="description">
-                  
+
                     @Html.DisplayFor(modelItem => item.Description)
                 </td>
 
@@ -75,12 +77,12 @@
                     }
                     else
                     {
-                        <a class="favorite" href ="#" data-rid="@item.recipe_id" data-uid="@item.User_id">  <span class="fa fa-heart-o"></span></a>
+                        <a class="favorite" href="#" data-rid="@item.recipe_id" data-uid="@item.User_id">  <span class="fa fa-heart-o"></span></a>
                     }
 
                 </td>
                 <td>
-                  
+                
                 </td>
                 <td>
                     @*@Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |*@
@@ -160,7 +162,7 @@
             $('input#recipeSearchText').keyup(function () {
                 $('ul#recipeLiveSearchUl').empty();
 
-              
+
 
                 var currentRecipePageNumber = 1;
                 //$('#tblRecipes tbody').find("tr").remove();

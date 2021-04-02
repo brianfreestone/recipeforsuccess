@@ -192,12 +192,14 @@ namespace RecipeForSuccess_mvc.Controllers
                 string encryptedCode = SHA256HashGenerator.GenerateHash(forgot.Code);
                 if (Session["ec"].ToString() == encryptedCode)
                 {
-                    return RedirectToAction("ResetPassword");
+
+
+                    return RedirectToAction("ResetPassword", "Account");
                 }
                 else
                 {
                     ViewBag.CodeSuccess = "true";
-                    TempData["Error"] = "There was an error, please re-enter your the code";
+                    TempData["Error"] = "There was an error, please re-enter the code";
                     return View(forgot);
                     //return RedirectToAction("ForgotPassword");
                 }
@@ -217,7 +219,7 @@ namespace RecipeForSuccess_mvc.Controllers
             }
             else
             {
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Login", "Home");
             }
         }
 
@@ -227,40 +229,29 @@ namespace RecipeForSuccess_mvc.Controllers
         {
             if (ModelState.IsValid)
             {
-
-                // check old password
-                if (!usersService.ExistingPasswordMatches(resetVM.User_id, resetVM.OldPassword))
-                {
-                    ModelState.AddModelError("Password", "Password does not match existing password");
-                    return View();
-                }
-
                 if (!usersService.PasswordExists(resetVM.Password, resetVM.User_id))
                 {
+
                     usersService.ChangeUserPassword(resetVM);
 
                     TempData["Success"] = "Password successfully updated!";
                     Session["fUID"] = null;
                     Session["ec"] = null;
-                    return RedirectToAction("login", "Home");
+                    return RedirectToAction("login", "Account");
                 }
                 else
                 {
+                    TempData["Error"] = "Password cannot be a previously used password";
                     ModelState.AddModelError("Password", "Password cannot be a previously used password");
-                    return View();
+                    return View(resetVM);
                 }
-
-
             }
             else
             {
-                ModelState.AddModelError("pasword", "Passwords must match");
+                ModelState.AddModelError("password", "Passwords must match");
                 return View(resetVM);
             }
-
-
         }
-
 
         [HttpGet]
         public ActionResult ViewFriends(int userID)
@@ -416,7 +407,6 @@ namespace RecipeForSuccess_mvc.Controllers
             int user_id = Convert.ToInt32(Session["CurrentUserID"]);
             EditUserPasswordVM editUserPasswordVM = new EditUserPasswordVM() { User_id = user_id, Password = "", Confirm_password = "" };
             return View(editUserPasswordVM);
-
         }
 
         [HttpPost]
@@ -426,12 +416,12 @@ namespace RecipeForSuccess_mvc.Controllers
         {
             if (ModelState.IsValid)
             {
-                // check old password
-                if (!usersService.ExistingPasswordMatches(editUserPasswordVM.User_id, editUserPasswordVM.OldPassword))
-                {
-                    ModelState.AddModelError("Password", "Password does not match existing password");
-                    return View();
-                }
+                //// check old password
+                //if (!usersService.ExistingPasswordMatches(editUserPasswordVM.User_id, editUserPasswordVM.OldPassword))
+                //{
+                //    ModelState.AddModelError("Password", "Password does not match existing password");
+                //    return View();
+                //}
 
                 if (!usersService.PasswordExists(editUserPasswordVM.Password, editUserPasswordVM.User_id))
                 {

@@ -211,6 +211,145 @@
             }
 
 
+            /*
+             Hub
+             */
+
+            // Setup Hub Connection
+            var hub = $.connection.echo;
+
+            hub.client.test = function (msg) {
+                console.log(msg);
+            }
+
+            hub.client.friendRequestNotify = function (friend, requestCount) {
+
+
+
+                $("span.friendRequestNotification." + friend + "> span").text(requestCount);
+                $("span.friendRequestNotification." + friend).addClass("green");
+            }
+
+            hub.client.friendRequestCount = function (username, count) {
+                if (count > 0) {
+                    $("span.friendRequestNotification." + username + "> span").text(count);
+                }
+                else {
+                    $("span.friendRequestNotification." + username + "> span").text("");
+                    $("span.friendRequestNotification." + username).removeClass("green");
+
+                }
+            }
+
+            // connect to the hub
+            $.connection.hub
+            .start()
+            .done(function () {
+
+                hub.server.hello("SignalR works from Username");
+
+                /*
+                 * Add Friend From their page
+                 */
+
+
+                $('a.addFriendFromPage').click(function (e) {
+                    e.preventDefault();
+
+                    var friend = '@ViewBag.ViewingUserName'
+
+                    var url = '/profile/AddFriend';
+
+                    $.post(url, { friend: friend }, function (data) {
+                        //$('.areFriendsDiv').removeClass('alert-info').addClass('alert-warning').html('<p>Pending Friend Request</p>');
+                    }).done(function () {
+                        hub.server.notify(friend);
+                        window.location.href = "/" + friend;
+                    });
+                });
+
+
+                /*
+                    * Add Friend
+                    */
+                $('a.addFriend').click(function (e) {
+                    e.preventDefault();
+
+                    var $this = $(this);
+                    var userName = $this.data("id");
+
+                    var friend = '@ViewBag.UserName';
+
+                    console.log('friend: ' + friend);
+                    console.log('userName: ' + userName);
+
+                    var url = '/profile/AddFriend';
+
+                    $.post(url, { friend: userName }, function (data) {
+                        //$('.areFriendsDiv').removeClass('alert-info').addClass('alert-warning').html('<p>Pending Friend Request</p>');
+                    }).done(function () {
+                        hub.server.notify(friend);
+                        window.location.href = "/" + friend;
+                    });
+                });
+
+                ///////////////////////////////////////////////
+                /*
+                * Accept friend requests
+                */
+
+                $("body").on("click", "a.btnAccept", function (e) {
+                    e.preventDefault();
+
+                    var $this = $(this);
+                    var friendId = $this.data("id");
+                    var trRow = $this.data("row");
+
+                    var friend = '@ViewBag.UserName';
+                    console.log('rownum: ' + trRow);
+                    var url = "/profile/AcceptFriendRequest";
+                    $.post(url, { friendId: friendId }, function (data) {
+                    }).done(function () {
+                        //$this.parent().fadeOut("fast");
+                        hub.server.getFriendRequestCount(@ViewBag.UserID);
+
+                        //hub.server.getFriendCount(friendId);
+                        window.location.href = "/" + friend;
+                        $this.parent().parent().remove();
+                        //loadFriends(currentPageNumber);
+                    });
+                });
+
+                ///////////////////////////////////////////////
+                /*
+                * Decline friend requests
+                */
+
+                $("body").on("click", "a.btnDecline", function (e) {
+                    e.preventDefault();
+
+                    var $this = $(this);
+                    var friendId = $this.data("id");
+                    var trRow = $this.data("row");
+
+                    var friend = '@ViewBag.UserName';
+                    console.log('rownum: ' + trRow);
+                    var url = "/profile/DeclineFriendRequest";
+                    $.post(url, { friendId: friendId }, function (data) {
+                    }).done(function () {
+                        //$this.parent().fadeOut("fast");
+                        hub.server.getFriendRequestCount(@ViewBag.UserID);
+
+                        //hub.server.getFriendCount(friendId);
+                        window.location.href = "/" + friend;
+                        //$this.parent().parent().remove();
+                        //loadFriends(currentPageNumber);
+                    });
+                });
+
+            });
+
+
         });
     </script>
 }
