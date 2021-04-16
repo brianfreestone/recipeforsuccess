@@ -1,7 +1,55 @@
-﻿
+﻿@model IEnumerable<RecipeForSuccess.ViewModels.UserVM>
+
 @{
     ViewBag.Title = "Index";
 }
 
-<h2>Admin Index</h2>
+<h2>Users </h2>
 
+
+<table class="table">
+    <tr>
+        <th></th>
+        <th>
+            First Name
+        </th>
+        <th>
+            Last Name
+        </th>
+        <th>
+            Username
+        </th>
+        <th>
+            Active
+        </th>
+
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.HiddenFor(modelItem => item.User_id)
+        </td>
+
+        <td>
+            @Html.DisplayFor(modelItem => item.First_name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Last_name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Username)
+        </td>
+        <td>
+            @Html.CheckBoxFor(modelItem => item.IsActive)
+        </td>
+
+        <td>
+            <a href="/admin/adminhome/delete/@item.User_id" onclick="return confirm('Are you sure you want to deactivate this user?');">Deactivate</a>
+            @*@Html.ActionLink("Delete", "Delete", new {  userID = item.User_id  }, new { onclick = "return confirm('Are you sure you want to delete this user?');" })*@
+        </td>
+    </tr>
+}
+
+</table>

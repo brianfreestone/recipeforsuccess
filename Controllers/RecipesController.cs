@@ -25,10 +25,10 @@ namespace RecipeForSuccess_mvc.Controllers
 
         // GET: Recipes
         [UserAuthorizationFilterAttribute]
-        public ActionResult Index(int userID = 0)
+        public ActionResult Index(int userID = 0, bool fav = false)
         {
 
-
+            int userID2 = 0;
             string userName = User.Identity.Name;
             ViewBag.Username = userName;
             int loggedInUserID = usersService.GetUserIDByUserName(userName);
@@ -36,10 +36,14 @@ namespace RecipeForSuccess_mvc.Controllers
             {
                 ViewBag.UserType = "owner";
                 userID = loggedInUserID;
+                userID2 = loggedInUserID;
+                ViewBag.FavUserID = userID;
             }
             else
             {
                 ViewBag.UserType = "guest";
+                userID2 = loggedInUserID;
+                ViewBag.FavUserID = userID2;
             }
 
             ViewBag.UserID = userID;
@@ -51,7 +55,17 @@ namespace RecipeForSuccess_mvc.Controllers
                 ViewBag.FriendRequestCount = friendRequestCount;
             }
 
-            List<RecipeVM> recipeVMs = recipesService.GetRecipesByUserID(userID);
+            List<RecipeVM> recipeVMs;
+
+            if (fav == true)
+            {
+                recipeVMs = recipesService.GetFavoriteRecipesByUserID(userID);
+            }
+            else
+            {
+                recipeVMs = recipesService.GetRecipesByUserID(userID, userID2);
+            }
+            
 
             return View(recipeVMs);
         }

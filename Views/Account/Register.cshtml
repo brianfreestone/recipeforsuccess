@@ -18,14 +18,14 @@
 
 <div class="background">
     <div class="register-form container">
-        @using (Html.BeginForm())
+        @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { enctype = "multipart/form-data" }))
         {
             @Html.AntiForgeryToken()
 
 
             <h2 class="text-center">Sign Up</h2>
             <p class="lead text-center">Please fill in this form to create an account!</p>
-            @Html.ValidationSummary(true, "All fields must be filled out!", new { @class = "text-danger" })
+            @Html.ValidationSummary(false, "Correct the following errors:", new { @class = "text-danger" })
 
             <div class="form-group">
                 @Html.LabelFor(model => model.First_name, htmlAttributes: new { @class = "control-label col-md-4" })
@@ -89,6 +89,16 @@
             </div>
 
             <div class="form-group">
+                <label class="control-label col-md-5" for="imageUpload">Upload a picture</label>
+                <div class="col-md-7">
+                    <label class="btn btn-primary">
+                        Choose File<input type="file" name="file" id="imageUpload" hidden />
+                    </label>
+                    <img id="imgPreview" src="#" />
+                </div>
+            </div>
+
+            <div class="form-group">
 
                 <input type="submit" id="btnSubmit" value="Create" class="btn btn-success btn-block" />
 
@@ -103,6 +113,26 @@
 @section scripts{
 
     <script>
+
+        $(function () {
+
+            /* Preview Selected Image */
+            function readURL(input) {
+                if (input.files && input.files[0]) {
+                    var reader = new FileReader();
+
+                    reader.onload = function (e) {
+                        $("img#imgPreview").attr("src", e.target.result).width(200).height(200);
+                    }
+
+                    reader.readAsDataURL(input.files[0]);
+                }
+            }
+
+            $("#imageUpload").change(function () {
+                readURL(this);
+            });
+        });
 
         // this function is an ajax call to the web api
         //

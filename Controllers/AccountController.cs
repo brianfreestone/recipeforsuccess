@@ -7,6 +7,7 @@ using RecipeForSuccess.ViewModels;
 using RecipeForSuccess.ServiceLayer;
 using System.Web.Security;
 using RecipeForSuccess_mvc.CustomFilters;
+using System.IO;
 
 namespace RecipeForSuccess_mvc.Controllers
 {
@@ -33,10 +34,29 @@ namespace RecipeForSuccess_mvc.Controllers
         // POST: Account/Register
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Register(RegisterVM registerVM)
+        public ActionResult Register(RegisterVM registerVM, HttpPostedFileBase file)
         {
-            if (ModelState.IsValid)
+            if (ModelState.IsValid && file != null)
             {
+
+                // check if file was uploaded
+                if (file != null && file.ContentLength > 0)
+                {
+                    // get extension
+                    string ext = file.ContentType.ToLower();
+
+                    // verify extension
+                    if (ext != "image/jpg" &&
+                        ext != "image/jpeg" &&
+                        ext != "image/pjpeg" &&
+                        ext != "image/gif" &&
+                        ext != "image/x-png" &&
+                        ext != "image/png")
+                    {
+                        ModelState.AddModelError("", "The image was not uploaded - wrong image extension");
+                        return View(registerVM);
+                    }
+                }
 
                 if (usersService.UserExistsByEmail(registerVM.Email))
                 {
@@ -50,6 +70,25 @@ namespace RecipeForSuccess_mvc.Controllers
                 }
 
                 int userID = usersService.InsertUser(registerVM);
+
+                // set upload directory
+                var uploadsDirectory = new DirectoryInfo(string.Format("{0}Uploads\\Users", Server.MapPath(@"\")));
+
+                // set image name
+                string imageName = userID + ".jpg";
+
+                // set path
+                var path = string.Format("{0}\\{1}", uploadsDirectory, imageName);
+
+                // save image
+                if (file != null && file.ContentLength > 0)
+                {
+                    file.SaveAs(path);
+                }
+
+                TempData["Success"] = "Recipe Added";
+
+
                 Session["CurrentUserID"] = userID;
                 Session["CurrentUserName"] = registerVM.Username;
                 Session["CurrentUserIsAdmin"] = false;
@@ -62,8 +101,17 @@ namespace RecipeForSuccess_mvc.Controllers
             }
             else
             {
+                if (file == null)
+                {
+                    ViewBag.Error = "Please upload a picture.";
+                    ModelState.AddModelError("key", "Please upload a picture.");
+                }
+                else
+                {
+
                 ViewBag.Error = "All Fields must be completed.";
                 ModelState.AddModelError("key", "Fields must be completed");
+                }
             }
 
             return View(registerVM);

@@ -74,6 +74,14 @@ li.userLiveSearchLi, li.recipeLiveSearchLi {
     position: relative;
 }
 
+    li.userLiveSearchLi img {
+        width: 50px;
+        margin-right: 5px;
+    }
+
+.userImg{
+    width:100px;
+}
 
 
 ul#userLiveSearchUl, ul#recipeLiveSearchUl {

@@ -7,6 +7,10 @@
 <div class="container">
 
     <h2>My Recipes</h2>
+    @if (ViewBag.UserType == "owner")
+    {
+        <a href="/recipes/Index?userID=@ViewBag.UserID&fav=true" >View Favorites</a>
+    }
     <div class="row">
         @if (ViewBag.UserType == "owner")
         {
@@ -73,16 +77,15 @@
                 <td>
                     @if (item.Favorite == true)
                     {
-                        <a class="favorite" href="#" data-rid="@item.recipe_id" data-uid="@item.User_id">  <span class="fa fa-heart"></span></a>
+                        <a class="favorite" href="#" data-rid="@item.recipe_id" data-uid="@ViewBag.FavUserID">  <span class="fa fa-heart"></span></a>
                     }
                     else
                     {
-                        <a class="favorite" href="#" data-rid="@item.recipe_id" data-uid="@item.User_id">  <span class="fa fa-heart-o"></span></a>
+                        <a class="favorite" href="#" data-rid="@item.recipe_id" data-uid="@ViewBag.FavUserID">  <span class="fa fa-heart-o"></span></a>
                     }
 
                 </td>
                 <td>
-                
                 </td>
                 <td>
                     @*@Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |*@

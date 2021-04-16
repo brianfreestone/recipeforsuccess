@@ -149,7 +149,7 @@
                         for (var i = 0; i < data.length; i++) {
                             var obj = data[i];
 
-                            $('ul#userLiveSearchUl').append('<li class="userLiveSearchLi" ><i class="fa fa-search mr-2"></i><a class=searchLi data-id="' + obj.Username +  '" href="/' + obj.Username + '">' + obj.First_name + ' ' + obj.Last_name + '</a></li>');
+                            $('ul#userLiveSearchUl').append('<li class="userLiveSearchLi" ><img src="/Uploads/Users/' + obj.User_id + '.jpg" /><a class=searchLi data-id="' + obj.Username +  '" href="/' + obj.Username + '">' + obj.First_name + ' ' + obj.Last_name + '</a></li>');
                         }
                         //$('ul#userLiveSearchUl').append('<li class="userLiveSearchLi" "><i class="fa fa-search mr-2"></i><a href="/' + obj.Username + '"> Search for ' + searchVal + '</a></li>');
                     }
