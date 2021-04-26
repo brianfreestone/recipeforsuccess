@@ -169,6 +169,9 @@ namespace RecipeForSuccess_mvc.Controllers
 
                 List<CommentVM> comments = recipesService.GetCommentsByRecipeID(recipeID);
                 ViewBag.Comments = comments;
+                double rating = recipesService.GetRatingByRecipeID(recipeID);
+                ViewBag.user_id = recipe.User_id;
+                ViewBag.rating = rating;
                 return View(recipe);
                 //}
             }

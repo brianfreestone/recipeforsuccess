@@ -19,15 +19,58 @@
                         <div class="recipe-summary">
                             <h5 class="card-title">@Html.DisplayFor(model => model.Description)</h5>
                         </div>
-                        <!--Kate Stuff-->
-                        @*<div class ="ratingDiv"> Test
-                            <a class="ratingStar" href="#" data-rid="@Model.recipe_id" id="StarOne"<span class="fa fa-star">☆</span></a>
-                            <a class="ratingStar" href="#" data-rid="@Model.recipe_id" id="StarTwo"<span class="fa fa-star">☆</span></a>
-                            <a class="ratingStar" href="#" data-rid="@Model.recipe_id" id="StarThree"<span class="fa fa-star">☆</span></a>
-                            <a class="ratingStar" href="#" data-rid="@Model.recipe_id" id="StarFour"<span class="fa fa-star">☆</span></a>
-                            <a class="ratingStar" href="#" data-rid="@Model.recipe_id" id="StarFive"<span class="fa fa-star">☆</span></a>
 
-                        </div>*@
+                        <!--Kate Stuff-->
+                        <div class="ratingDiv">
+                            @{
+                                var rating = ViewBag.rating;
+
+
+                                if (rating == 1)
+                                { <a class="ratingStar" href="#" data-rid="@Model.recipe_id" data-star="1"><span class="fa fa-star"></span></a>
+                                    <a class="ratingStar" href="#" data-rid="@Model.recipe_id" data-star="2"><span class="fa fa-star-o"></span></a>
+                                    <a class="ratingStar" href="#" data-rid="@Model.recipe_id" data-star="3"><span class="fa fa-star-o"></span></a>
+                                    <a class="ratingStar" href="#" data-rid="@Model.recipe_id" data-star="4"><span class="fa fa-star-o"></span></a>
+                                    <a class="ratingStar" href="#" data-rid="@Model.recipe_id" data-star="5"><span class="fa fa-star-o"></span></a>
+                                }
+
+                                if (rating == 2)
+                                { <a class="ratingStar" href="#" data-rid="@Model.recipe_id" data-star="1"><span class="fa fa-star"></span></a>
+                                    <a class="ratingStar" href="#" data-rid="@Model.recipe_id" data-star="2"><span class="fa fa-star"></span></a>
+                                    <a class="ratingStar" href="#" data-rid="@Model.recipe_id" data-star="3"><span class="fa fa-star-o"></span></a>
+                                    <a class="ratingStar" href="#" data-rid="@Model.recipe_id" data-star="4"><span class="fa fa-star-o"></span></a>
+                                    <a class="ratingStar" href="#" data-rid="@Model.recipe_id" data-star="5"><span class="fa fa-star-o"></span></a>
+                                }
+
+                                if (rating == 3)
+                                { <a class="ratingStar" href="#" data-rid="@Model.recipe_id" data-star="1"><span class="fa fa-star"></span></a>
+                                    <a class="ratingStar" href="#" data-rid="@Model.recipe_id" data-star="2"><span class="fa fa-star"></span></a>
+                                    <a class="ratingStar" href="#" data-rid="@Model.recipe_id" data-star="3"><span class="fa fa-star"></span></a>
+                                    <a class="ratingStar" href="#" data-rid="@Model.recipe_id" data-star="4"><span class="fa fa-star-o"></span></a>
+                                    <a class="ratingStar" href="#" data-rid="@Model.recipe_id" data-star="5"><span class="fa fa-star-o"></span></a>
+                                }
+
+                                if (rating == 4)
+                                { <a class="ratingStar" href="#" data-rid="@Model.recipe_id" data-star="1"><span class="fa fa-star"></span></a>
+                                    <a class="ratingStar" href="#" data-rid="@Model.recipe_id" data-star="2"><span class="fa fa-star"></span></a>
+                                    <a class="ratingStar" href="#" data-rid="@Model.recipe_id" data-star="3"><span class="fa fa-star"></span></a>
+                                    <a class="ratingStar" href="#" data-rid="@Model.recipe_id" data-star="4"><span class="fa fa-star"></span></a>
+                                    <a class="ratingStar" href="#" data-rid="@Model.recipe_id" data-star="5"><span class="fa fa-star-o"></span></a>
+                                }
+
+                                if (rating == 5)
+                                { <a class="ratingStar" href="#" data-rid="@Model.recipe_id" data-star="1"><span class="fa fa-star"></span></a>
+                                    <a class="ratingStar" href="#" data-rid="@Model.recipe_id" data-star="2"><span class="fa fa-star"></span></a>
+                                    <a class="ratingStar" href="#" data-rid="@Model.recipe_id" data-star="3"><span class="fa fa-star"></span></a>
+                                    <a class="ratingStar" href="#" data-rid="@Model.recipe_id" data-star="4"><span class="fa fa-star"></span></a>
+                                    <a class="ratingStar" href="#" data-rid="@Model.recipe_id" data-star="5"><span class="fa fa-star"></span></a>
+                                }
+
+
+
+
+                            }
+                        </div>
                         <div class="author">
                             <a href="/@Model.Username" class="author-profile"><img src="~/Uploads/Users/@(Model.recipe_id).jpg" class="img-thumbnail authorImage" /></a>
                             <span class="card-subtitle text-muted" id="authorName">Recipe By: <a href="/@Model.Username" class="author-profile">@Model.UserFullName</a></span>
@@ -119,6 +162,23 @@
     <script>
 
         $(document).ready(function () {
+
+            //set rating
+            $(".ratingStar").on("click", function () {
+                var $this = $(this);
+                var recipe_id = $this.data("rid");
+                var user_id = @ViewBag.user_id;
+                var rating = $this.data("star");
+                var url = "/Recipes/AddRating"
+                $.post(url, { recipeID: recipe_id, userID: user_id, rating: rating }, function (data) {
+
+                }).done(function () {
+
+                    location.href = "/Recipes/ViewRecipe/" + recipe_id;
+                });
+
+
+            });
 
             // add comment
 

@@ -306,11 +306,13 @@ li.friendRequestNotificationLi {
 .ratingStar {
     cursor: pointer;
     width: 18px;
+    color: gold;
+    
 }
 
-/*.ratingStar:hover {
+.ratingStar:hover {
     width: 18px;
-}*/
+}
 
 
 .ratingDiv{
